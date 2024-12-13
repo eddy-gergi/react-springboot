@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    name: backend
+    url: jdbc:postgresql://localhost:5432/backend?autoreconnect=true
+    username: postgres
+    password: master
+  web:
+    cors:
+      allowed-origin-patterns: "http://localhost:5174"
+      allow-credentials: true
+
+
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  type-handlers-package: com.info404.backend.handlers

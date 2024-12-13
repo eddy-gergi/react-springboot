@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+        <typeAlias alias="UUID" type="java.util.UUID" />
+        <typeAlias alias="UuidTypeHandler" type="com.info404.backend.handlers.UuidTypeHandler" />
+        <package name="com.info404.backend.api" />
+    </typeAliases>
+</configuration>
