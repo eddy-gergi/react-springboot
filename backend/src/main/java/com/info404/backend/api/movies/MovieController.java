@@ -1,4 +1,4 @@
-package com.info404.backend.api.books;
+package com.info404.backend.api.movies;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,21 +10,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-@RequestMapping("/api/books")   
+@RequestMapping("/api/movies")   
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-public class BookController {
+public class MovieController {
+
 
     @Autowired
-    private BooksService booksService;
+    private MovieService movieService;
 
     @GetMapping("/all")
-    public List<Books> selectAll() {
-        return this.booksService.selectAll();
+    public List<Movies> selectAll() {
+        return this.movieService.selectAll();
     }
 
     @GetMapping("{id}")
-    public Books selectById(@PathVariable("id") UUID id){
-        return this.booksService.selectById(id);
+    public Movies selectById(@PathVariable("id") UUID id){
+        return this.movieService.selectById(id);
     }
 }

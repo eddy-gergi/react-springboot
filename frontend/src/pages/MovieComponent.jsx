@@ -9,7 +9,7 @@ const MovieComponent = () => {
 
   const findMedia = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/books/${id}`);
+      const response = await axios.get(`http://localhost:8080/api/movies/${id}`);
       setMedia(response.data);
       
     } catch (error) {

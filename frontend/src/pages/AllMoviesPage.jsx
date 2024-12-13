@@ -1,12 +1,26 @@
-// src/pages/AllMoviesPage.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AllMoviesPage = () => {
-  const movies = [
-    { id: 1, title: "Inception", description: "Mind-bending thriller" },
-    { id: 2, title: "The Matrix", description: "Reality and illusion clash" },
-    { id: 3, title: "Interstellar", description: "Space and time adventure" },
-  ];
+  const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
+
+  const getAllMovies = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/movies/all", {
+        withCredentials: true,
+      });
+      setMovies(response.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getAllMovies();
+  }, []);
 
   return (
     <div className="container mx-auto mt-8">
@@ -18,6 +32,7 @@ const AllMoviesPage = () => {
             <h2 className="text-2xl font-bold">{movie.title}</h2>
             <p className="mt-2 text-gray-600">{movie.description}</p>
             <button className="btn btn-primary mt-4">Add to Cart</button>
+            <button className="btn btn-secondary mt-4" onClick={()=> navigate(`/movie/${movie.id}`)}>View</button>
           </div>
         ))}
       </div>

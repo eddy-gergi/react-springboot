@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.info404.backend.api.carts.CartsRepository">
+    <resultMap id="Carts" type="com.info404.backend.api.carts.Carts">
+        <id column="id" property="id" />
+        <result column="added_at" property="added_at" />
+        <result column="mediaId" property="mediaId" />
+        <result column="mediaType" property="mediaType" />
+        <result column="userId" property="userId" />
+    </resultMap>
+
+    <select id="selectById" resultMap="Carts">
+        SELECT * FROM carts WHERE userId = #{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
+    </select>
+</mapper>

@@ -3,10 +3,10 @@ spring:
     name: backend
     url: jdbc:postgresql://localhost:5432/backend?autoreconnect=true
     username: postgres
-    password: master
+    password: Emilio11022003
   web:
     cors:
-      allowed-origin-patterns: "http://localhost:5174"
+      allowed-origin-patterns: "http://localhost:5173"
       allow-credentials: true
 
 

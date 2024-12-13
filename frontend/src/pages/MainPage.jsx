@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const movies = [];
-
 const MainPage = () => {
   const [books, setBooks] = useState([]);
+  const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
 
   const getAllBooks = async () => {
@@ -16,14 +15,21 @@ const MainPage = () => {
       console.error("Failed to fetch books:", error.message);
     }
   };
-
+  const getAllMovies = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/movies/all");
+      setMovies(response.data);
+    } catch (error) {
+      console.error("Failed to fetch movies:", error.message);
+    }
+  }
   useEffect(() => {
     getAllBooks();
+    getAllMovies();
   }, []);
 
   return (
     <div className="min-h-screen bg-slate flex flex-col items-center">
-      {/* Welcome Section */}
       <div className="text-center bg-base-100 shadow-xl rounded-lg p-8 mt-8 max-w-4xl w-full mx-4">
         <h1 className="text-5xl font-bold text-primary mb-2">
           Welcome to LibraFlick
@@ -49,6 +55,7 @@ const MainPage = () => {
 
       {/* Movies Section */}
       <div className="mt-12 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+        <p className="text-5xl text-center font-bold text-primary mb-2">Movies</p>
         {movies.map((movie) => (
           <div
             key={movie.id}
@@ -81,6 +88,7 @@ const MainPage = () => {
 
       {/* Books Section */}
       <div className="mt-12 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+      <p className="text-5xl text-center font-bold text-primary mb-2">Books</p>
         {books.map((book) => (
           <div
             key={book.id}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.info404.backend.api.movies.MoviesRepository">
+    <resultMap id="Movies" type="com.info404.backend.api.movies.Movies">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="director" property="director" />
+        <result column="genre" property="genre" />
+        <result column="releaseyear" property="releaseyear" />
+        <result column="description" property="description" />
+        <result column="url" property="url" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="Movies">
+        SELECT * FROM movies
+    </select>
+    <select id="selectById" resultMap="Movies">
+        SELECT * FROM movies WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
+    </select>
+</mapper>
