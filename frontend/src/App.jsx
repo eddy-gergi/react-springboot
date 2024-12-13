@@ -19,6 +19,7 @@ import AddAdminForm from "./components/admin/AddAdminForm";
 import DeleteBookForm from "./components/admin/DeleteBookForm";
 import DeleteMovieForm from "./components/admin/DeleteMovieForm";
 import DeleteAdminForm from "./components/admin/DeleteAdminForm";
+import SearchPage from "./pages/SearchPage";
 
 const AppContent = () => {
   const location = useLocation();
@@ -47,6 +48,7 @@ const AppContent = () => {
           <Route path="/admin-dashboard/delete-book" element={<DeleteBookForm />} />
           <Route path="/admin-dashboard/delete-movie" element={<DeleteMovieForm />} />
           <Route path="/admin-dashboard/delete-admin" element={<DeleteAdminForm />} />
+          <Route path="/search" element={<SearchPage/>} />
         </Routes>
       </main>
 

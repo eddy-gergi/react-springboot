@@ -15,6 +15,7 @@ const MainPage = () => {
       console.error("Failed to fetch books:", error.message);
     }
   };
+
   const getAllMovies = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/movies/all");
@@ -22,7 +23,8 @@ const MainPage = () => {
     } catch (error) {
       console.error("Failed to fetch movies:", error.message);
     }
-  }
+  };
+
   useEffect(() => {
     getAllBooks();
     getAllMovies();
@@ -52,10 +54,11 @@ const MainPage = () => {
           </a>
         </div>
       </div>
-
       {/* Movies Section */}
       <div className="mt-12 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-        <p className="text-5xl text-center font-bold text-primary mb-2">Movies</p>
+        <p className="text-5xl text-center font-bold text-primary mb-2">
+          🎬 Movies
+        </p>
         {movies.map((movie) => (
           <div
             key={movie.id}
@@ -88,7 +91,9 @@ const MainPage = () => {
 
       {/* Books Section */}
       <div className="mt-12 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-      <p className="text-5xl text-center font-bold text-primary mb-2">Books</p>
+        <p className="text-5xl text-center font-bold text-primary mb-2">
+          📚 Books
+        </p>
         {books.map((book) => (
           <div
             key={book.id}
