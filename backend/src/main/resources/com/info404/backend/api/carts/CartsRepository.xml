@@ -10,23 +10,20 @@
         <result column="userId" property="userId" />
     </resultMap>
 
-    <select id="selectByUserId" resultMap="Carts">
-        SELECT * FROM carts WHERE userId = #{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
-    </select>
+    <select id="selectByUserId" resultMap="Carts"> SELECT * FROM cart WHERE userId = #{userId,
+        javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
 
-    
-    <insert id="insertBooks" parameterType="Carts">
-        INSERT INTO carts (userId, mediaId, mediaType, added_at)
-        VALUES (#{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
-                #{mediaId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
-                #{mediaType}, CURRENT_TIMESTAMP)
-    </insert>
 
-   
-    <insert id="insertMovies" parameterType="Carts">
-        INSERT INTO carts (userId, mediaId, mediaType, added_at)
-        VALUES (#{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
-                #{mediaId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
-                #{mediaType}, CURRENT_TIMESTAMP)
-    </insert>
+    <insert id="insertBooks" parameterType="Carts"> INSERT INTO cart (userId, mediaId, mediaType,
+        added_at) VALUES ( #{userId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler}, #{mediaId, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}, #{mediaType},
+        CURRENT_TIMESTAMP ) </insert>
+
+
+    <insert id="insertMovies" parameterType="Carts"> INSERT INTO cart (userId, mediaId, mediaType,
+        added_at) VALUES (#{userId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler}, #{mediaId, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}, #{mediaType},
+        CURRENT_TIMESTAMP) </insert>
 </mapper>
