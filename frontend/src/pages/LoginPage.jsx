@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserFormValidation } from "@/lib/validation";
 import SubmitButton from "../components/SubmitButton";
 import CustomFormField from "../components/CustomFormField";
+import axios from "axios";
+import { users_api } from "../services/api";
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(UserFormValidation),
@@ -19,14 +21,26 @@ const LoginPage = () => {
   });
 
   const handleLogin = async (values) => {
+    console.log("Form submitted with values:", values); 
+
     setIsLoading(true);
 
     try {
-      console.log("Logging in with:", values);
-      // Call your login API endpoint here
-      // await loginUser(values);
+
+      const response = await axios.get('http://localhost:8080/api/users/login', {
+        email: values.email,
+        password: values.password,
+      });
+
+      console.log("Response received:", response);
+      const id = response.data.id;
+      sessionStorage.setItem("userId", id);
+
+      console.log("Login Successful! Redirecting...");
+      navigate("/cart"); 
     } catch (error) {
-      console.error("Login Error:", error);
+      console.error("Login Error:", error.response?.data || error.message);
+      alert("Login failed. Please check your credentials.");
     }
 
     setIsLoading(false);
@@ -65,8 +79,10 @@ const LoginPage = () => {
           Sign Up
         </Link>
         <br />
-        Are you an admin?
-        <Link to="/adminlogin" className="text-blue-500 font-bold"> Press Here</Link>
+        Are you an admin?{" "}
+        <Link to="/adminlogin" className="text-blue-500 font-bold">
+          Press Here
+        </Link>
       </p>
     </div>
   );

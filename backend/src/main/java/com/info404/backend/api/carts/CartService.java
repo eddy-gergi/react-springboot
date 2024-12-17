@@ -10,8 +10,17 @@ public class CartService {
 
     @Autowired
     private CartsRepository cartsRepository;
-
-    public Carts selectById(UUID id){
-        return this.cartsRepository.selectById(id);
+    
+    public Carts selectByUserId(UUID id){
+        return this.cartsRepository.selectByUserId(id);
     }
+
+    public void insertBooks(UUID userID, UUID mediaID, String mediaType){
+        this.cartsRepository.insertBooks(userID, mediaID, mediaType);
+    }
+    
+    public void insertMovies(UUID userID, UUID mediaID, String mediaType) {
+        this.cartsRepository.insertMovies(userID, mediaID, mediaType);
+    }
+
 }

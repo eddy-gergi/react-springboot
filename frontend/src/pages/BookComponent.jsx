@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 const BookComponent = () => {
   const { id } = useParams();
   const [media, setMedia] = useState({});
+  const userId = "43a77782-6ffd-452a-a50b-482d5ebba117"; 
 
   const findMedia = async () => {
     try {
@@ -19,8 +20,21 @@ const BookComponent = () => {
     findMedia();
   }, []);
 
-  const handleAddToCart = () => {
-    alert(`${media.title} has been added to your cart`);
+  const handleAddToCart = async () => {
+    try {
+      // Sending POST request to add the book to the cart
+      const response = await axios.post(
+        `http://localhost:8080/api/carts/${userId}/add-books`,
+        {
+          mediaId: id,
+          mediaType: "book",
+        }
+      );
+      alert(`${media.title} has been added to your cart!`);
+    } catch (error) {
+      console.error("Failed to add media to cart:", error.message);
+      alert("There was an error adding the media to your cart.");
+    }
   };
 
   return (
@@ -32,7 +46,7 @@ const BookComponent = () => {
             src={media.url}
             alt={media.title}
             className="w-full h-auto object-contain"
-            style={{ maxHeight: "500px" }} // Ensures the image scales proportionally
+            style={{ maxHeight: "500px" }} 
           />
         </div>
         <div className="p-6 flex flex-col justify-between md:w-1/2 w-full">

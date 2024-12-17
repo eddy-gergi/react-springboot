@@ -4,13 +4,29 @@
 <mapper namespace="com.info404.backend.api.carts.CartsRepository">
     <resultMap id="Carts" type="com.info404.backend.api.carts.Carts">
         <id column="id" property="id" />
-        <result column="added_at" property="added_at" />
+        <result column="added_at" property="addedAt" />
         <result column="mediaId" property="mediaId" />
         <result column="mediaType" property="mediaType" />
         <result column="userId" property="userId" />
     </resultMap>
 
-    <select id="selectById" resultMap="Carts">
+    <select id="selectByUserId" resultMap="Carts">
         SELECT * FROM carts WHERE userId = #{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
     </select>
+
+    
+    <insert id="insertBooks" parameterType="Carts">
+        INSERT INTO carts (userId, mediaId, mediaType, added_at)
+        VALUES (#{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
+                #{mediaId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
+                #{mediaType}, CURRENT_TIMESTAMP)
+    </insert>
+
+   
+    <insert id="insertMovies" parameterType="Carts">
+        INSERT INTO carts (userId, mediaId, mediaType, added_at)
+        VALUES (#{userId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
+                #{mediaId, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
+                #{mediaType}, CURRENT_TIMESTAMP)
+    </insert>
 </mapper>
