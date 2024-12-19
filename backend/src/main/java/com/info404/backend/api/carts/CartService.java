@@ -1,5 +1,7 @@
 package com.info404.backend.api.carts;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +12,18 @@ public class CartService {
 
     @Autowired
     private CartsRepository cartsRepository;
-    
-    public Carts selectByUserId(UUID id){
-        return this.cartsRepository.selectByUserId(id);
+
+    public List<Carts> getCartByUserId(UUID userId) {
+        return this.cartsRepository.selectByUserId(userId);
     }
 
-    public void insertBooks(UUID userID, UUID mediaID, String mediaType){
-        this.cartsRepository.insertBooks(userID, mediaID, mediaType);
-    }
-    
-    public void insertMovies(UUID userID, UUID mediaID, String mediaType) {
-        this.cartsRepository.insertMovies(userID, mediaID, mediaType);
-    }
+    public void addToCart(UUID userId, UUID mediaId, String mediaType) {
+        Carts cartEntry = new Carts();
+        cartEntry.setUserId(userId);
+        cartEntry.setMediaId(mediaId);
+        cartEntry.setMediaType(mediaType);
+        cartEntry.setAddedAt(LocalDateTime.now());
 
+        cartsRepository.insertCartEntry(cartEntry);
+    }
 }

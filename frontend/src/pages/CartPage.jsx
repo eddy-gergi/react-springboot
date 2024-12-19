@@ -1,14 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { format, isToday, isYesterday, parseISO } from "date-fns";
+import { carts_api, book_api, movie_api } from "../services/api";
 
 const CartPage = () => {
-  const initialCartItems = [
-    { id: 1, title: "The Great Gatsby", type: "Book", rating: 0 },
-    { id: 2, title: "Inception", type: "Movie", rating: 0 },
-  ];
+  const [cartItems, setCartItems] = useState([]);
+  const [mediaDetails, setMediaDetails] = useState({});
 
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const getCartItems = async () => {
+    try {
+      const response = await axios.get(`${carts_api}/5fdc6f3c-9374-4505-a754-d87f655538c3`);
+      setCartItems(response.data);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
 
-  // Handle ranking change
+  const getMediaDetails = async () => {
+    try {
+      const mediaDetailsMap = {};
+      for (const item of cartItems) {
+        const api = item.mediaType === "book" ? book_api : movie_api;
+        const response = await axios.get(`${api}/${item.mediaId}`);
+        mediaDetailsMap[item.id] = response.data;
+      }
+      setMediaDetails(mediaDetailsMap);
+    } catch (error) {
+      console.error("Error fetching media details:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCartItems();
+  }, []);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      getMediaDetails();
+    }
+  }, [cartItems]);
+
   const handleRatingChange = (id, rating) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -17,16 +48,25 @@ const CartPage = () => {
     );
   };
 
-  // Handle item removal
   const handleRemove = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
+
+  const formatDate = (dateString) => {
+    const date = parseISO(dateString);
+    if (isToday(date)) {
+      return `Today, ${format(date, "p")}`;
+    } else if (isYesterday(date)) {
+      return `Yesterday, ${format(date, "p")}`;
+    } else {
+      return format(date, "MMM d, yyyy, p");
+    }
   };
 
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-4xl font-bold mb-4 text-center">Your Cart</h1>
 
-      {/* Cart Items */}
       <div className="overflow-x-auto shadow-lg rounded-lg">
         <table className="table w-full table-zebra">
           <thead>
@@ -34,17 +74,20 @@ const CartPage = () => {
               <th className="text-left">Item</th>
               <th>Type</th>
               <th>Ranking</th>
+              <th>Date Added</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {cartItems.map((item) => (
               <tr key={item.id}>
-                <td className="font-semibold">{item.title}</td>
-                <td>{item.type}</td>
+                <td className="font-semibold">
+                  {mediaDetails[item.id]?.title || "Loading..."}
+                </td>
+                <td>{item.mediaType}</td>
                 <td>
                   <select
-                    value={item.rating}
+                    value={item.rating || 0}
                     onChange={(e) => handleRatingChange(item.id, parseInt(e.target.value))}
                     className="select select-bordered select-sm"
                   >
@@ -56,6 +99,7 @@ const CartPage = () => {
                     <option value={5}>⭐⭐⭐⭐⭐</option>
                   </select>
                 </td>
+                <td>{formatDate(item.addedAt)}</td>
                 <td>
                   <button
                     onClick={() => handleRemove(item.id)}
@@ -70,7 +114,6 @@ const CartPage = () => {
         </table>
       </div>
 
-      {/* Feedback Section */}
       {cartItems.length === 0 ? (
         <div className="text-center mt-8">
           <h2 className="text-2xl font-semibold text-gray-600">
@@ -83,7 +126,7 @@ const CartPage = () => {
             Thank you for ranking your favorites! 🌟
           </h2>
           <p className="text-gray-600">
-            Your rankings helps us recommend better content for you.
+            Your rankings help us recommend better content for you.
           </p>
         </div>
       )}
