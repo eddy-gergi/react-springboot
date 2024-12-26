@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { carts_api } from "../services/api";
 
 const AllBooksPage = () => {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
+  const userId = "5fdc6f3c-9374-4505-a754-d87f655538c3";
 
   const getAllBooks = async () => {
     try {
@@ -14,6 +16,24 @@ const AllBooksPage = () => {
       setBooks(response.data);
     } catch (error) {
       console.error("Failed to fetch books:", error.message);
+    }
+  };
+
+  const addToCart = async (id) => {
+    console.log("Book ID to add to cart:", id); // Debugging
+    try {
+      const payload = {
+        mediaId: id,
+        mediaType: "book",
+      };
+      console.log("Sending payload:", payload); // Debugging
+      const response = await axios.post(`${carts_api}/${userId}/add`, payload, {
+        withCredentials: true,
+      });
+      alert("Item has been added to your cart!");
+    } catch (error) {
+      console.error("Failed to add media to cart:", error.response?.data || error.message);
+      alert(`Error: ${error.response?.data?.message || "Something went wrong!"}`);
     }
   };
 
@@ -34,11 +54,16 @@ const AllBooksPage = () => {
             <p className="mt-2 text-gray-600">{book.description}</p>
             <button
               className="btn btn-secondary mt-4"
-              onClick={() => navigate(`/book/${book.id}`)} 
+              onClick={() => navigate(`/book/${book.id}`)}
             >
               View
             </button>
-            <button className="btn btn-primary mt-4">Add to Cart</button>
+            <button
+              className="btn btn-primary mt-4"
+              onClick={() => addToCart(book.id)}
+            >
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>

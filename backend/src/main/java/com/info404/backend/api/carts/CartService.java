@@ -26,4 +26,8 @@ public class CartService {
 
         cartsRepository.insertCartEntry(cartEntry);
     }
+
+    public void removeCartEntry(UUID id) {
+        this.cartsRepository.removeCartEntry(id);
+    }
 }

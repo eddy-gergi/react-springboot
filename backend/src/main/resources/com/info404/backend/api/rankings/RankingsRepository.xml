@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.info404.backend.api.rankings.RankingsRepository">
+    <resultMap id="Rankings" type="com.info404.backend.api.rankings.Rankings">
+        <id column="id" property="id" />
+        <result column="userId" property="userId" />
+        <result column="mediaId" property="mediaId" />
+        <result column="mediaType" property="mediaType" />
+        <result column="ranking" property="ranking" />
+        <result column="ranked_at" property="rankedAt" />
+    </resultMap>
+
+    <select id="selectByUserId" resultMap="Rankings"> SELECT * FROM rankings WHERE userId =
+        #{userId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
+
+    <select id="selectByMediaId" resultMap="Rankings"> SELECT * FROM rankings WHERE mediaId =
+        #{mediaId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
+
+    <delete id="removeRankingEntry"> DELETE FROM rankings WHERE userId = #{userId, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} AND mediaId =
+        #{mediaId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
+
+
+    <insert id="insertRankingEntry" parameterType="com.info404.backend.api.rankings.Rankings">
+        INSERT INTO rankings (userId, mediaId, mediaType, ranking, ranked_at) VALUES ( #{userId,
+        javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler},
+        #{mediaId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler}, #{mediaType}, #{ranking},
+        CURRENT_TIMESTAMP ) </insert>
+
+    <update id="updateRankingEntry" parameterType="com.info404.backend.api.rankings.Rankings">
+        UPDATE rankings SET ranking = #{ranking} WHERE userId = #{userId, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} AND mediaId =
+        #{mediaId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </update>
+
+
+</mapper>

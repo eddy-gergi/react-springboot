@@ -31,4 +31,9 @@ public class CartController {
 
         cartService.addToCart(userId, mediaId, mediaType);
     }
+
+    @DeleteMapping("{id}")
+    public void removeCartEntry(@PathVariable("id") UUID id) {
+        this.cartService.removeCartEntry(id);
+    }
 }

@@ -7,8 +7,8 @@ const BookComponent = () => {
   const { id } = useParams();
   const [media, setMedia] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const userId = "5fdc6f3c-9374-4505-a754-d87f655538c3";
-  const BASE_URL = "http://localhost:8080/api";
+  const userId = sessionStorage.getItem("userId");
+  //const userId = "5fdc6f3c-9374-4505-a754-d87f655538c3";
 
   const findMedia = async () => {
     try {

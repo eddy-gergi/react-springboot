@@ -12,5 +12,6 @@ interface UsersRepository {
     void insert(Users user);
     void deleteById(UUID id);
     Users UpdateById(UUID id);
+    Users login(String email, String password);
   
 }

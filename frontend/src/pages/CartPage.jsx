@@ -4,18 +4,23 @@ import { format, isToday, isYesterday, parseISO } from "date-fns";
 import { carts_api, book_api, movie_api } from "../services/api";
 
 const CartPage = () => {
+  const userId = sessionStorage.getItem("userId");
+  //const userId = "5fdc6f3c-9374-4505-a754-d87f655538c3";
   const [cartItems, setCartItems] = useState([]);
   const [mediaDetails, setMediaDetails] = useState({});
+  const [rankings, setRankings] = useState({});
 
+  // Fetch cart items
   const getCartItems = async () => {
     try {
-      const response = await axios.get(`${carts_api}/5fdc6f3c-9374-4505-a754-d87f655538c3`);
+      const response = await axios.get(`${carts_api}/${userId}`);
       setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
 
+  // Fetch media details for the items in the cart
   const getMediaDetails = async () => {
     try {
       const mediaDetailsMap = {};
@@ -30,8 +35,23 @@ const CartPage = () => {
     }
   };
 
+  // Fetch rankings for the user
+  const getRankings = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/rankings/all/${userId}`);
+      const rankingsMap = response.data.reduce((map, ranking) => {
+        map[ranking.mediaId] = ranking.ranking;
+        return map;
+      }, {});
+      setRankings(rankingsMap);
+    } catch (error) {
+      console.error("Error fetching rankings:", error);
+    }
+  };
+
   useEffect(() => {
     getCartItems();
+    getRankings();
   }, []);
 
   useEffect(() => {
@@ -40,18 +60,77 @@ const CartPage = () => {
     }
   }, [cartItems]);
 
-  const handleRatingChange = (id, rating) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, rating } : item
-      )
-    );
+  const handleRankingChange = async (id, ranking) => {
+    const selectedItem = cartItems.find((item) => item.id === id);
+    if (!selectedItem) return;
+  
+    // Ensure ranking is a valid number
+    if (ranking === null || ranking === undefined || isNaN(ranking)) {
+      alert("Invalid ranking value.");
+      return;
+    }
+  
+    try {
+      console.log("Updating ranking:", { userId, mediaId: selectedItem.mediaId, ranking }); 
+  
+      if (!rankings[selectedItem.mediaId]) {
+        await axios.post(`http://localhost:8080/api/rankings/${userId}/addRanking`, {
+          mediaId: selectedItem.mediaId,
+          mediaType: selectedItem.mediaType,
+          ranking,
+        });
+        alert("Ranking added successfully!");
+      } else {
+        await axios.put(`http://localhost:8080/api/rankings/${userId}`, {
+          userId,
+          mediaId: selectedItem.mediaId,
+          mediaType: selectedItem.mediaType,
+          ranking,
+        });
+        alert("Ranking updated successfully!");
+      }
+  
+      setRankings((prevRankings) => ({
+        ...prevRankings,
+        [selectedItem.mediaId]: ranking,
+      }));
+  
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, ranking } : item
+        )
+      );
+    } catch (error) {
+      console.error(`Error ${rankings[selectedItem.mediaId] ? "updating" : "adding"} ranking:`, error);
+      alert(`Failed to ${rankings[selectedItem.mediaId] ? "update" : "add"} ranking. Please try again.`);
+    }
   };
+  
 
-  const handleRemove = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const handleRemove = async (id, mediaId) => {
+    const selectedItem = cartItems.find((item) => item.id === id);
+    if (!selectedItem) return;
+  
+    try {
+      const response = await axios.delete(`${carts_api}/${id}`);
+      console.log("Item removed from cart:", response.data);
+  
+      if (rankings[mediaId]) {
+        await axios.delete(`http://localhost:8080/api/rankings/${userId}/${mediaId}`);
+        console.log("Ranking removed successfully!");
+      }
+  
+      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+      setRankings((prevRankings) => {
+        const updatedRankings = { ...prevRankings };
+        delete updatedRankings[mediaId];
+        return updatedRankings;
+      });
+    } catch (error) {
+      console.error("Error removing item and ranking:", error);
+    }
   };
-
+  
   const formatDate = (dateString) => {
     const date = parseISO(dateString);
     if (isToday(date)) {
@@ -66,7 +145,6 @@ const CartPage = () => {
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-4xl font-bold mb-4 text-center">Your Cart</h1>
-
       <div className="overflow-x-auto shadow-lg rounded-lg">
         <table className="table w-full table-zebra">
           <thead>
@@ -87,8 +165,10 @@ const CartPage = () => {
                 <td>{item.mediaType}</td>
                 <td>
                   <select
-                    value={item.rating || 0}
-                    onChange={(e) => handleRatingChange(item.id, parseInt(e.target.value))}
+                    value={rankings[item.mediaId] || 0}
+                    onChange={(e) =>
+                      handleRankingChange(item.id, parseInt(e.target.value))
+                    }
                     className="select select-bordered select-sm"
                   >
                     <option value={0}>Select</option>
@@ -102,7 +182,7 @@ const CartPage = () => {
                 <td>{formatDate(item.addedAt)}</td>
                 <td>
                   <button
-                    onClick={() => handleRemove(item.id)}
+                    onClick={() => handleRemove(item.id, item.mediaId)}
                     className="btn btn-error btn-sm"
                   >
                     Remove
@@ -113,7 +193,6 @@ const CartPage = () => {
           </tbody>
         </table>
       </div>
-
       {cartItems.length === 0 ? (
         <div className="text-center mt-8">
           <h2 className="text-2xl font-semibold text-gray-600">

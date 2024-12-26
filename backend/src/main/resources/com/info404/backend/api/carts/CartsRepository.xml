@@ -24,4 +24,7 @@
             CURRENT_TIMESTAMP
         )
     </insert>
+    <delete id="removeCartEntry">
+        DELETE FROM cart WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
+    </delete>
 </mapper>

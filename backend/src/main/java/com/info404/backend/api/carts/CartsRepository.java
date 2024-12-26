@@ -8,5 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CartsRepository {
     List<Carts> selectByUserId(UUID id);
     void insertCartEntry(Carts cart);
+    void removeCartEntry(UUID id);
 
 }

@@ -10,24 +10,23 @@
         <result column="role" property="role" />
     </resultMap>
 
-    <select id="selectAll" resultMap="Users"> 
-        SELECT * FROM users 
-    </select>
+    <select id="selectAll" resultMap="Users"> SELECT * FROM users </select>
 
-    <select id="selectById" resultMap="Users"> 
-        SELECT * FROM users WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} 
-    </select>
+    <select id="selectById" resultMap="Users"> SELECT * FROM users WHERE id = #{id, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
 
-    <delete id="deleteById"> 
-        DELETE FROM users WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} 
-    </delete>
+    <select id="login" resultMap="Users"> SELECT * FROM users WHERE email = #{email} AND password =
+        #{password} </select>
 
-    <insert id="insert" parameterType="Users"> 
-        INSERT INTO users(name,email,password) VALUES (#{name},#{email},#{password}) 
-    </insert>
 
-    <update id="updateById" parameterType="Users"> 
-        UPDATE users SET name = #{name}, email = #{email}, password = #{password} WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} 
-    </update>
+    <delete id="deleteById"> DELETE FROM users WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
+
+    <insert id="insert" parameterType="Users"> INSERT INTO users(name,email,password) VALUES
+        (#{name},#{email},#{password}) </insert>
+
+    <update id="updateById" parameterType="Users"> UPDATE users SET name = #{name}, email =
+        #{email}, password = #{password} WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </update>
 
 </mapper>
