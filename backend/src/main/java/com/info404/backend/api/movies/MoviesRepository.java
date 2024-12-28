@@ -8,4 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 interface MoviesRepository {
     List<Movies> selectAll();
     Movies selectById(UUID id);
+    void insert(Movies movie);
+    void deleteById(UUID id);
 }

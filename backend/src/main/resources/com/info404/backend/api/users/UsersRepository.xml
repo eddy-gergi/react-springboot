@@ -17,8 +17,6 @@
 
     <select id="login" resultMap="Users"> SELECT * FROM users WHERE email = #{email} AND password =
         #{password} </select>
-
-
     <delete id="deleteById"> DELETE FROM users WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
 

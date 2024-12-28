@@ -12,10 +12,13 @@
         <result column="url" property="url" />
     </resultMap>
 
-    <select id="selectAll" resultMap="Books">
-        SELECT * FROM books
-    </select>
-    <select id="selectById" resultMap="Books">
-        SELECT * FROM books WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
-    </select>
+    <select id="selectAll" resultMap="Books"> SELECT * FROM books </select>
+    <select id="selectById" resultMap="Books"> SELECT * FROM books WHERE id = #{id, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
+    <insert id="insert" parameterType="Books"> INSERT INTO books (title, author, genre,
+        publishedyear, description, url) VALUES (#{title}, #{author}, #{genre}, #{publishedyear},
+        #{description}, #{url}) </insert>
+
+    <delete id="deleteById"> DELETE FROM books WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
 </mapper>

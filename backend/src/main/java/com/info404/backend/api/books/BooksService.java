@@ -19,4 +19,12 @@ public class BooksService {
     public Books selectById(UUID id){
         return this.booksRepository.selectById(id);
     }
+
+    public void insert(Books book){
+        this.booksRepository.insert(book);
+    }
+
+    public void deleteById(UUID id){
+        this.booksRepository.deleteById(id);
+    }
 }

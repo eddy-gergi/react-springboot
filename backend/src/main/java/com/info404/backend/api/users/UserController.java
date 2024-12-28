@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -46,16 +48,16 @@ public class UserController {
         this.userService.deleteById(id);
     }
 
-    @PostMapping("/login")
-    public Users login(@RequestBody LoginRequest loginRequest) {
-        System.out.println("Attempting login for: " + loginRequest.getEmail());
-        Users user = this.userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        if (user != null) {
-            System.out.println("Login successful for: " + user.getEmail());
+    @GetMapping("/login")
+    public Users login(@Valid @RequestBody LoginRequest loginRequest) {
+        Users userFromDb = this.userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+
+        if (userFromDb != null) {
+            System.out.println("Login successful for: " + loginRequest.getEmail());
+            return userFromDb; 
         } else {
             System.out.println("Login failed for: " + loginRequest.getEmail());
+            return null; 
         }
-        return user;
     }
-
 }

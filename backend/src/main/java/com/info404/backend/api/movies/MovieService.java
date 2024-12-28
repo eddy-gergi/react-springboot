@@ -18,4 +18,12 @@ public class MovieService {
     public Movies selectById(UUID id){
         return this.movieRepository.selectById(id);
     }
+
+    public void insert(Movies movie){
+        this.movieRepository.insert(movie);
+    }
+
+    public void deleteById(UUID id){
+        this.movieRepository.deleteById(id);
+    }
 }

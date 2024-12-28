@@ -9,4 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
 interface BooksRepository {
     List<Books> selectAll();
     Books selectById(UUID id);
+    void insert(Books book);
+    void deleteById(UUID id);
 }

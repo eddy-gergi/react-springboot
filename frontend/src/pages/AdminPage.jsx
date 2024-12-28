@@ -3,10 +3,8 @@ import UserStats from "../components/admin/UserStats";
 import AddMovieForm from "../components/admin/AddMovieForm";
 import AddBookForm from "../components/admin/AddBookForm";
 import AddAdminForm from "../components/admin/AddAdminForm";
-import DeleteMovieForm from "../components/admin/DeleteMovieForm";
-import DeleteAdminForm from "../components/admin/DeleteAdminForm";
-import DeleteBookForm from "../components/admin/DeleteBookForm";
 import SignOutButton from "../components/admin/SignOutButton";
+
 
 const AdminPage = () => {
   const [selectedOption, setSelectedOption] = useState("UserStats");
@@ -21,12 +19,6 @@ const AdminPage = () => {
         return <AddBookForm />;
       case "AddAdmin":
         return <AddAdminForm />;
-      case "DeleteMovie":
-        return <DeleteMovieForm />;
-      case "DeleteAdmin":
-        return <DeleteAdminForm />;
-      case "DeleteBook":
-        return <DeleteBookForm />;
       case "SignOut":
         return <SignOutButton />;
       default:
@@ -44,9 +36,6 @@ const AdminPage = () => {
             { name: "Add Movie", key: "AddMovie" },
             { name: "Add Book", key: "AddBook" },
             { name: "Add Admin", key: "AddAdmin" },
-            { name: "Delete Movie", key: "DeleteMovie" },
-            { name: "Delete Admin", key: "DeleteAdmin" },
-            { name: "Delete Book", key: "DeleteBook" },
             { name: "Sign Out", key: "SignOut" }
           ].map((option) => (
             <button

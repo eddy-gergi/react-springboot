@@ -18,4 +18,10 @@
     <select id="selectById" resultMap="Movies">
         SELECT * FROM movies WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
     </select>
+    <insert id="insert" parameterType="Movies">
+        INSERT INTO movies (title, director, genre, releaseyear, description, url) VALUES (#{title}, #{director}, #{genre}, #{releaseyear}, #{description}, #{url})
+    </insert>
+    <delete id="deleteById">
+        DELETE FROM movies WHERE id = #{id, javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}
+    </delete>
 </mapper>

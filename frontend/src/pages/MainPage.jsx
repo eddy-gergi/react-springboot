@@ -74,11 +74,8 @@ const MainPage = () => {
             <div className="flex-1 p-4 flex flex-col justify-between">
               <p className="font-bold text-lg truncate">{movie.title}</p>
               <div className="mt-2 flex justify-between gap-2">
-                <button className="btn btn-accent mt-2 px-4 py-2">
-                  Add to Cart
-                </button>
                 <button
-                  className="btn btn-outline btn-secondary mt-2 px-4 py-2"
+                  className="btn btn-outline btn-secondary mt-2 px-4 py-2 "
                   onClick={() => navigate(`/book/${movie.id}`)}
                 >
                   View
@@ -110,9 +107,6 @@ const MainPage = () => {
               <p className="font-bold text-lg truncate">{book.title}</p>
               <p className="text-gray-600 mt-1 italic">📚 Book</p>
               <div className="mt-2 flex justify-between gap-2">
-                <button className="btn btn-accent mt-2 px-4 py-2">
-                  Add to Cart
-                </button>
                 <button
                   className="btn btn-outline btn-secondary mt-2 px-4 py-2"
                   onClick={() => navigate(`/book/${book.id}`)}
