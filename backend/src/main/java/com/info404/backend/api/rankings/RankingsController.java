@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.info404.backend.api.ApiRequest;
 import com.info404.backend.api.OrderByDirection;
 
+import jakarta.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/api/rankings")
@@ -35,7 +37,7 @@ public class RankingsController {
     }
 
     @PostMapping("/{userId}/addRanking")
-    public void addToCart(@PathVariable("userId") UUID userId, @RequestBody Map<String, Object> requestBody) {
+    public void addToCart(@PathVariable("userId") @Valid UUID userId, @RequestBody Map<String, Object> requestBody) {
         UUID mediaId = UUID.fromString((String) requestBody.get("mediaId"));
         String mediaType = (String) requestBody.get("mediaType");
         Integer rating = (Integer) requestBody.get("ranking");
@@ -56,7 +58,7 @@ public class RankingsController {
 
     @PutMapping("{id}")
 public void updateRankingEntry(@PathVariable("id") UUID id, @RequestBody Map<String, Object> requestBody) {
-    System.out.println("Request Body: " + requestBody);  // Log the incoming request body
+    System.out.println("Request Body: " + requestBody);
 
     UUID userId = UUID.fromString((String) requestBody.get("userId"));
     UUID mediaId = UUID.fromString((String) requestBody.get("mediaId"));

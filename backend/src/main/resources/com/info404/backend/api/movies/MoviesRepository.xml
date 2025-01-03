@@ -12,11 +12,19 @@
         <result column="url" property="url" />
     </resultMap>
 
-    <select id="selectAll" resultMap="Movies"> SELECT * FROM movies<if
-            test="orderByColumn != null"> ORDER BY ${orderByColumn.toString()} <if
-                test="orderByDirection != null"> ${orderByDirection.toString()} </if>
-        </if>
+    <select id="selectAll" resultMap="Movies"> SELECT * FROM movies <where>
+            <if test="search != null"> (title ILIKE CONCAT('%', #{search}, '%') OR director ILIKE
+        CONCAT('%', #{search}, '%') OR genre ILIKE CONCAT('%', #{search}, '%') OR CAST(releaseyear
+        AS TEXT) ILIKE CONCAT('%', #{search}, '%')) </if>
+        </where>
+    <if
+            test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
+        ${orderByDirection} </if>
+    <if test="limit != null"> LIMIT #{limit} </if>
+    <if
+            test="offset != null"> OFFSET #{offset} </if>
     </select>
+
     <select id="selectById" resultMap="Movies"> SELECT * FROM movies WHERE id = #{id, javaType=UUID,
         jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
     <insert id="insert" parameterType="Movies"> INSERT INTO movies (title, director, genre,

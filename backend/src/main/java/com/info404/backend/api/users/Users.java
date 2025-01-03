@@ -2,13 +2,17 @@ package com.info404.backend.api.users;
 
 import java.util.UUID;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public class Users{
-    @NotNull
+    @NotNull @NotEmpty
     private UUID id;
-    @NotNull
-    private String name, email, password, role;
+    @NotNull @NotEmpty
+    private String name, password, role;
+    @NotNull @NotEmpty @Email
+    private String email;
     public UUID getId() {
         return id;
     }

@@ -10,7 +10,7 @@ const AllBooksPage = () => {
 
   const getAllBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/books/all", {
+      const response = await axios.get("http://localhost:8080/api/books/all?orderByColumn=title&orderByDirection=ascending", {
         withCredentials: true,
       });
       setBooks(response.data);

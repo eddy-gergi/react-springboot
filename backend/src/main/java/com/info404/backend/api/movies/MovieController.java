@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.info404.backend.api.ApiRequest;
 import com.info404.backend.api.OrderByDirection;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/movies")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -26,13 +28,19 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/all")
-    public List<Movies> selectAll(@RequestParam(name="orderByColumn", required= 
-false)MovieOrderByColumn movieOrderByColumn,
-  @RequestParam(name="orderByDirection", required = false)OrderByDirection orderByDirection) {
-    ApiRequest apiRequest = new ApiRequest();
-    apiRequest.setOrderByColumn(movieOrderByColumn);
-    apiRequest.setOrderByDirection(orderByDirection);
-    return this.movieService.selectAll(apiRequest);
+    public List<Movies> selectAll(
+            @RequestParam(name = "orderByColumn", required = false) MovieOrderByColumn movieOrderByColumn,
+            @RequestParam(name = "orderByDirection", required = false) OrderByDirection orderByDirection,
+            @RequestParam(name = "limit", required = false) Integer limit,
+            @RequestParam(name = "offset", required = false) Integer offset,
+            @RequestParam(name = "search", required = false) String search) {
+        ApiRequest apiRequest = new ApiRequest();
+        apiRequest.setOrderByColumn(movieOrderByColumn);
+        apiRequest.setOrderByDirection(orderByDirection);
+        apiRequest.setLimit(limit);
+        apiRequest.setOffset(offset);
+        apiRequest.setSearch(search);
+        return this.movieService.selectAll(apiRequest);
     }
 
     @GetMapping("{id}")
@@ -41,7 +49,7 @@ false)MovieOrderByColumn movieOrderByColumn,
     }
 
     @PostMapping("/add")
-    public void insert(@RequestBody Movies movie) {
+    public void insert(@RequestBody @Valid Movies movie) {
         this.movieService.insert(movie);
     }
 

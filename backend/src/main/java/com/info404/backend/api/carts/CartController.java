@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/api/carts")
@@ -21,7 +23,7 @@ public class CartController {
     }
 
     @PostMapping("/{userId}/add")
-    public void addToCart(@PathVariable("userId") UUID userId, @RequestBody Map<String, Object> requestBody) {
+    public void addToCart(@PathVariable("userId") @Valid UUID userId, @RequestBody Map<String, Object> requestBody) {
         UUID mediaId = UUID.fromString((String) requestBody.get("mediaId"));
         String mediaType = (String) requestBody.get("mediaType");
 

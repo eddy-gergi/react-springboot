@@ -2,9 +2,15 @@ package com.info404.backend.api.movies;
 
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class Movies {
+    @NotNull @NotEmpty
     private UUID id;
+    @NotNull @NotEmpty
     private String title, director, genre, description, url;
+    @NotNull @NotEmpty
     private Integer releaseyear;
     public UUID getId() {
         return id;

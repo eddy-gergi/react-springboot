@@ -1,21 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState([
-    { id: 1, title: "The Great Gatsby", type: "Book" },
-    { id: 2, title: "Inception", type: "Movie" },
-    { id: 3, title: "Moby Dick", type: "Book" },
-    { id: 4, title: "Interstellar", type: "Movie" },
-  ]);
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const fetchResults = async () => {
+    if (searchQuery.trim() === "") {
+      setResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const [booksResponse, moviesResponse] = await Promise.all([
+        axios.get(`http://localhost:8080/api/books/all?search=${searchQuery}`),
+        axios.get(`http://localhost:8080/api/movies/all?search=${searchQuery}`),
+      ]);
+
+      const books = booksResponse.data.map((book) => ({
+        id: book.id,
+        title: book.title,
+        type: "Book",
+      }));
+
+      const movies = moviesResponse.data.map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        type: "Movie",
+      }));
+
+      setResults([...books, ...movies]);
+    } catch (error) {
+      console.error("Error fetching search results:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const debounceFetch = setTimeout(() => {
+      fetchResults();
+    }, 300);
+
+    return () => clearTimeout(debounceFetch); 
+  }, [searchQuery]);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredResults = results.filter((item) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleView = (item) => {
+    if (item.type === "Movie") {
+      navigate(`/movie/${item.id}`);
+    } else if (item.type === "Book") {
+      navigate(`/book/${item.id}`);
+    }
+  };
 
   return (
     <div className="container mx-auto mt-8 px-4">
@@ -33,10 +78,15 @@ const SearchPage = () => {
         />
       </div>
 
+      {/* Loading Indicator */}
+      {isLoading && (
+        <p className="text-center text-gray-600 mt-4">Loading...</p>
+      )}
+
       {/* Search Results */}
-      {filteredResults.length > 0 ? (
+      {results.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredResults.map((item) => (
+          {results.map((item) => (
             <div
               key={item.id}
               className="rounded-lg shadow-lg overflow-hidden bg-slate-700 p-4 transition-transform duration-300 hover:scale-105 hover:bg-slate"
@@ -45,10 +95,10 @@ const SearchPage = () => {
               <p className="text-gray-600 mb-2 italic">{item.type}</p>
 
               <div className="mt-4 flex justify-between">
-                <button className="btn btn-accent btn-sm px-4 py-2 rounded-lg hover:bg-accent">
-                  Add to Cart
-                </button>
-                <button className="btn btn-outline btn-secondary btn-sm px-4 py-2 rounded-lg hover:bg-gray-200">
+                <button
+                  className="btn btn-outline btn-secondary btn-sm px-4 py-2 rounded-lg hover:bg-gray-200"
+                  onClick={() => handleView(item)}
+                >
                   View
                 </button>
               </div>
@@ -56,9 +106,11 @@ const SearchPage = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-600 mt-8 text-lg">
-          No results found for <span className="font-bold">"{searchQuery}"</span>
-        </p>
+        !isLoading && (
+          <p className="text-center text-gray-600 mt-8 text-lg">
+            No results found for <span className="font-bold">"{searchQuery}"</span>
+          </p>
+        )
       )}
     </div>
   );

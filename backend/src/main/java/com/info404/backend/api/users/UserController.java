@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("")
-    public void insert(@RequestBody Users user) {
+    public void insert(@RequestBody @Valid Users user) {
         this.userService.insert(user);
     }
 

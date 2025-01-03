@@ -12,10 +12,19 @@
         <result column="url" property="url" />
     </resultMap>
 
-    <select id="selectAll" resultMap="Books"> SELECT * FROM books <if
-            test="orderByColumn != null"> ORDER BY ${orderByColumn.toString()} 
-            <if test="orderByDirection != null"> ${orderByDirection.toString()} </if>
-            </if></select>
+    <select id="selectAll" resultMap="Books"> SELECT * FROM books <where>
+            <if test="search != null"> (title ILIKE CONCAT('%', #{search}, '%') OR author ILIKE
+        CONCAT('%', #{search}, '%') OR genre ILIKE CONCAT('%', #{search}, '%') OR CAST(publishedyear
+        AS TEXT) ILIKE CONCAT('%', #{search}, '%')) </if>
+        </where>
+    <if
+            test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
+        ${orderByDirection} </if>
+    <if test="limit != null"> LIMIT #{limit} </if>
+    <if
+            test="offset != null"> OFFSET #{offset} </if>
+    </select>
+
     <select id="selectById" resultMap="Books"> SELECT * FROM books WHERE id = #{id, javaType=UUID,
         jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
     <insert id="insert" parameterType="Books"> INSERT INTO books (title, author, genre,

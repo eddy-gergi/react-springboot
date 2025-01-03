@@ -9,7 +9,9 @@ const MainPage = () => {
 
   const getAllBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/books/all");
+      const response = await axios.get(
+        "http://localhost:8080/api/books/all?orderByDirection=descending&limit=3"
+      );
       setBooks(response.data);
     } catch (error) {
       console.error("Failed to fetch books:", error.message);
@@ -18,7 +20,9 @@ const MainPage = () => {
 
   const getAllMovies = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/movies/all");
+      const response = await axios.get(
+        "http://localhost:8080/api/movies/all?orderByDirection=descending&limit=3"
+      );
       setMovies(response.data);
     } catch (error) {
       console.error("Failed to fetch movies:", error.message);
@@ -55,68 +59,75 @@ const MainPage = () => {
         </div>
       </div>
       {/* Movies Section */}
-      <div className="mt-12 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-        <p className="text-5xl text-center font-bold text-primary mb-2">
+      <div className="mt-12 w-full max-w-6xl mx-auto p-4">
+        <p className="text-5xl text-center font-bold text-primary mb-4">
           🎬 Movies
         </p>
-        {movies.map((movie) => (
-          <div
-            key={movie.id}
-            className="rounded-lg shadow-lg overflow-hidden flex flex-col h-96 bg-gray-50"
-          >
-            <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-              <img
-                src={movie.imgUrl}
-                alt={movie.title}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="flex-1 p-4 flex flex-col justify-between">
-              <p className="font-bold text-lg truncate">{movie.title}</p>
-              <div className="mt-2 flex justify-between gap-2">
-                <button
-                  className="btn btn-outline btn-secondary mt-2 px-4 py-2 "
-                  onClick={() => navigate(`/book/${movie.id}`)}
-                >
-                  View
-                </button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {movies.map((movie) => (
+            <div
+              key={movie.id}
+              className="rounded-lg shadow-lg overflow-hidden flex flex-col h-96 bg-gray-50"
+            >
+              <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+                <img
+                  src={movie.imgUrl}
+                  alt={movie.title}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <div className="p-4">
+                <p className="font-bold text-lg text-center truncate">
+                  {movie.title}
+                </p>
+                <div className="mt-4 flex justify-center">
+                  <button
+                    className="btn btn-outline btn-secondary px-4 py-2"
+                    onClick={() => navigate(`/movie/${movie.id}`)}
+                  >
+                    View
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Books Section */}
-      <div className="mt-12 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-        <p className="text-5xl text-center font-bold text-primary mb-2">
+      <div className="mt-12 w-full max-w-6xl mx-auto p-4">
+        <p className="text-5xl text-center font-bold text-primary mb-4">
           📚 Books
         </p>
-        {books.map((book) => (
-          <div
-            key={book.id}
-            className="rounded-lg shadow-lg overflow-hidden flex flex-col h-96 bg-gray-50"
-          >
-            <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-              <img
-                src={book.url}
-                alt={book.title}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="flex-1 p-4 flex flex-col justify-between">
-              <p className="font-bold text-lg truncate">{book.title}</p>
-              <p className="text-gray-600 mt-1 italic">📚 Book</p>
-              <div className="mt-2 flex justify-between gap-2">
-                <button
-                  className="btn btn-outline btn-secondary mt-2 px-4 py-2"
-                  onClick={() => navigate(`/book/${book.id}`)}
-                >
-                  View
-                </button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {books.map((book) => (
+            <div
+              key={book.id}
+              className="rounded-lg shadow-lg overflow-hidden flex flex-col h-96 bg-gray-50"
+            >
+              <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+                <img
+                  src={book.url}
+                  alt={book.title}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <div className="p-4">
+                <p className="font-bold text-lg text-center truncate">
+                  {book.title}
+                </p>
+                <div className="mt-4 flex justify-center">
+                  <button
+                    className="btn btn-outline btn-secondary px-4 py-2"
+                    onClick={() => navigate(`/book/${book.id}`)}
+                  >
+                    View
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

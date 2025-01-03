@@ -3,10 +3,17 @@ package com.info404.backend.api.rankings;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class Rankings {
+    @NotNull @NotEmpty
     private UUID id, userId, mediaId;
+    @NotNull @NotEmpty
     private Integer ranking;
+    @NotNull @NotEmpty
     private String mediaType;
+    @NotNull @NotEmpty
     private LocalDateTime rankedAt;
     public UUID getId() {
         return id;

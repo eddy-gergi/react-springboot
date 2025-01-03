@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.info404.backend.api.adminactions.AdminActionsRepository">
+    <resultMap id="AdminActions" type="com.info404.backend.api.adminactions.AdminActions">
+        <id column="id" property="id" />
+        <result column="adminId" property="adminId" />
+        <result column="actionInfo" property="actionInfo" />
+        <result column="actionTimestamp" property="actionTimestamp" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="AdminActions"> SELECT * FROM adminactions <if
+            test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
+        ${orderByDirection} </if>
+        <if test="limit != null"> LIMIT #{limit} </if>
+        <if
+            test="offset != null"> OFFSET #{offset} </if>
+    </select>
+
+    <insert id="insert" parameterType="AdminActions"> INSERT
+        INTO adminActions (adminId, actionInfo, actionTimestamp) VALUES (#{adminId, javaType=UUID,
+        jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler}, #{actionInfo},
+        CURRENT_TIMESTAMP) </insert>
+
+</mapper>

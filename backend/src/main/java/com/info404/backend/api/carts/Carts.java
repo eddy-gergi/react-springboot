@@ -3,11 +3,19 @@ package com.info404.backend.api.carts;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class Carts {
+    @NotNull @NotEmpty
     private UUID id;
+    @NotNull @NotEmpty
     private UUID userId;
+    @NotNull @NotEmpty
     private UUID mediaId;
+    @NotNull @NotEmpty
     private String mediaType;
+    @NotNull @NotEmpty
     private LocalDateTime addedAt;
 
     public UUID getId() {

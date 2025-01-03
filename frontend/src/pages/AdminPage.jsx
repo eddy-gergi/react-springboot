@@ -12,7 +12,7 @@ const AdminPage = () => {
   const renderContent = () => {
     switch (selectedOption) {
       case "UserStats":
-        return <UserStats usersCount={120} moviesCount={50} booksCount={80} />;
+        return <UserStats/>;
       case "AddMovie":
         return <AddMovieForm />;
       case "AddBook":

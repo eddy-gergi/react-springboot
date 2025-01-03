@@ -2,9 +2,15 @@ package com.info404.backend.api.books;
 
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class Books {
+    @NotNull @NotEmpty
     private UUID id;
+    @NotNull @NotEmpty
     private String title, author, genre, description, url;
+    @NotNull @NotEmpty
     private Integer publishedyear;
     
     public UUID getId() {

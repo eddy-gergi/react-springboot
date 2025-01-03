@@ -6,6 +6,8 @@ const UserStats = () => {
   const [users, setUsers] = useState([]);
   const [movies, setMovies] = useState([]);
   const [books, setBooks] = useState([]);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState("ascending");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,13 +30,16 @@ const UserStats = () => {
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
+    setSortColumn(null);
+    setSortDirection("ascending");
   };
 
   const handleDelete = async (id, category) => {
     try {
-      const apiUrl = category === "movies"
-        ? `http://localhost:8080/api/movies/${id}`
-        : `http://localhost:8080/api/books/${id}`;
+      const apiUrl =
+        category === "movies"
+          ? `http://localhost:8080/api/movies/${id}`
+          : `http://localhost:8080/api/books/${id}`;
 
       await axios.delete(apiUrl);
 
@@ -48,23 +53,98 @@ const UserStats = () => {
     }
   };
 
+  const handleSortChange = async () => {
+    if (!sortColumn || !selectedCategory) return;
+
+    try {
+      const apiUrl =
+        selectedCategory === "movies"
+          ? `http://localhost:8080/api/movies/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`
+          : `http://localhost:8080/api/books/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`;
+
+      const response = await axios.get(apiUrl);
+
+      if (selectedCategory === "movies") {
+        setMovies(response.data);
+      } else if (selectedCategory === "books") {
+        setBooks(response.data);
+      }
+    } catch (error) {
+      console.error("Error sorting data:", error);
+    }
+  };
+
+  useEffect(() => {
+    handleSortChange();
+  }, [sortColumn, sortDirection]);
+
+  const renderSortDropdown = () => {
+    if (selectedCategory === "movies" || selectedCategory === "books") {
+      const columns =
+        selectedCategory === "movies"
+          ? ["title", "director", "releaseyear", "genre"]
+          : ["title", "author", "publishedyear", "genre"];
+
+      return (
+        <div className="mt-4 flex items-center gap-4">
+          <div>
+            <label htmlFor="sortColumnDropdown" className="mr-2">
+              Sort by:
+            </label>
+            <select
+              id="sortColumnDropdown"
+              value={sortColumn || ""}
+              onChange={(e) => setSortColumn(e.target.value)}
+              className="border p-2 rounded"
+            >
+              <option value="" disabled>
+                Select column
+              </option>
+              {columns.map((column) => (
+                <option key={column} value={column}>
+                  {column.charAt(0).toUpperCase() + column.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="sortDirectionDropdown" className="mr-2">
+              Direction:
+            </label>
+            <select
+              id="sortDirectionDropdown"
+              value={sortDirection}
+              onChange={(e) => setSortDirection(e.target.value)}
+              className="border p-2 rounded"
+            >
+              <option value="ascending">Ascending</option>
+              <option value="descending">Descending</option>
+            </select>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   const renderTable = () => {
     if (selectedCategory === "users") {
       return (
         <table className="min-w-full mt-4 border-collapse">
           <thead>
             <tr>
-              <th className="px-4 py-2 border">ID</th>
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Email</th>
+              <th className="px-4 py-2 border">Role</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td className="px-4 py-2 border">{user.id}</td>
                 <td className="px-4 py-2 border">{user.name}</td>
                 <td className="px-4 py-2 border">{user.email}</td>
+                <td className="px-4 py-2 border">{user.role}</td>
               </tr>
             ))}
           </tbody>
@@ -171,6 +251,7 @@ const UserStats = () => {
         </div>
       </div>
 
+      {renderSortDropdown()}
       {renderTable()}
     </div>
   );
