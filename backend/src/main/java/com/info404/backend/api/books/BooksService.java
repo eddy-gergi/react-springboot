@@ -6,14 +6,16 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.info404.backend.api.ApiRequest;
+
 @Service
 public class BooksService {
 
     @Autowired
     private BooksRepository booksRepository;
 
-    public List<Books> selectAll() {
-        return this.booksRepository.selectAll();
+    public List<Books> selectAll(ApiRequest apiRequest) {
+        return this.booksRepository.selectAll(apiRequest);
     }
 
     public Books selectById(UUID id){

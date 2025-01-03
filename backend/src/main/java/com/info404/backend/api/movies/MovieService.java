@@ -6,13 +6,15 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.info404.backend.api.ApiRequest;
+
 @Service
 public class MovieService {
     @Autowired
     private MoviesRepository movieRepository;
 
-    public List<Movies> selectAll() {
-        return this.movieRepository.selectAll();
+    public List<Movies> selectAll(ApiRequest apiRequest) {
+        return this.movieRepository.selectAll(apiRequest);
     }
 
     public Movies selectById(UUID id){

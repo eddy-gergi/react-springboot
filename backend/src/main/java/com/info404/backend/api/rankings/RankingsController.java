@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.info404.backend.api.ApiRequest;
+import com.info404.backend.api.OrderByDirection;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -23,8 +27,11 @@ public class RankingsController {
     private RankingsService rankingsService;
 
     @GetMapping("all/{userId}")
-    public List<Rankings> getRankingByUserId(@PathVariable("userId") UUID userId) {
-        return rankingsService.getRankingByUserId(userId);
+    public List<Rankings> getRankingByUserId(@PathVariable("userId") UUID userId, @RequestParam(name="orderByColumn", required=false)RankingOrderByColumn rankingOrderByColumn, @RequestParam(name="orderByDirection", required=false)OrderByDirection orderByDirection) {
+        ApiRequest apiRequest=new ApiRequest();
+        apiRequest.setOrderByColumn(rankingOrderByColumn);
+        apiRequest.setOrderByDirection(orderByDirection);
+        return rankingsService.getRankingByUserId(userId, apiRequest);
     }
 
     @PostMapping("/{userId}/addRanking")

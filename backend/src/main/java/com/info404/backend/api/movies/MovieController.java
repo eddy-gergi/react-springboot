@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.info404.backend.api.ApiRequest;
+import com.info404.backend.api.OrderByDirection;
 
 @RestController
 @RequestMapping("/api/movies")
@@ -22,8 +26,13 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/all")
-    public List<Movies> selectAll() {
-        return this.movieService.selectAll();
+    public List<Movies> selectAll(@RequestParam(name="orderByColumn", required= 
+false)MovieOrderByColumn movieOrderByColumn,
+  @RequestParam(name="orderByDirection", required = false)OrderByDirection orderByDirection) {
+    ApiRequest apiRequest = new ApiRequest();
+    apiRequest.setOrderByColumn(movieOrderByColumn);
+    apiRequest.setOrderByDirection(orderByDirection);
+    return this.movieService.selectAll(apiRequest);
     }
 
     @GetMapping("{id}")

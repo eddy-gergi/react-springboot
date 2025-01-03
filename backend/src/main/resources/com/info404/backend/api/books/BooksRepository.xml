@@ -12,7 +12,10 @@
         <result column="url" property="url" />
     </resultMap>
 
-    <select id="selectAll" resultMap="Books"> SELECT * FROM books </select>
+    <select id="selectAll" resultMap="Books"> SELECT * FROM books <if
+            test="orderByColumn != null"> ORDER BY ${orderByColumn.toString()} 
+            <if test="orderByDirection != null"> ${orderByDirection.toString()} </if>
+            </if></select>
     <select id="selectById" resultMap="Books"> SELECT * FROM books WHERE id = #{id, javaType=UUID,
         jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
     <insert id="insert" parameterType="Books"> INSERT INTO books (title, author, genre,

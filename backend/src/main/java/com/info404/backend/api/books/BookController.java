@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.info404.backend.api.ApiRequest;
+import com.info404.backend.api.OrderByDirection;
 
 @RestController
 @RequestMapping("/api/books")
@@ -22,8 +26,13 @@ public class BookController {
     private BooksService booksService;
 
     @GetMapping("/all")
-    public List<Books> selectAll() {
-        return this.booksService.selectAll();
+    public List<Books> selectAll(@RequestParam(name="orderByColumn", required= 
+false)BookOrderByColumn bookOrderByColumn,
+  @RequestParam(name="orderByDirection", required = false)OrderByDirection orderByDirection) {
+    ApiRequest apiRequest = new ApiRequest();
+    apiRequest.setOrderByColumn(bookOrderByColumn);
+    apiRequest.setOrderByDirection(orderByDirection);
+        return this.booksService.selectAll(apiRequest);
     }
 
     @GetMapping("{id}")

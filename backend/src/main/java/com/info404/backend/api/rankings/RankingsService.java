@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.info404.backend.api.ApiRequest;
+
 @Service
 public class RankingsService {
     @Autowired
@@ -28,8 +30,8 @@ public class RankingsService {
     public void updateRankingEntry(Rankings ranking) {
         this.rankingsRepository.updateRankingEntry(ranking);
     }
-    public List<Rankings> getRankingByUserId(UUID userId) {
-        return this.rankingsRepository.selectByUserId(userId);
+    public List<Rankings> getRankingByUserId(UUID userId, ApiRequest apiRequest) {
+        return this.rankingsRepository.selectByUserId(userId, apiRequest);
     }
     public List<Rankings> getRankingByMediaId(UUID mediaId) {
         return this.rankingsRepository.selectByMediaId(mediaId);
