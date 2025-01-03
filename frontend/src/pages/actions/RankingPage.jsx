@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { book_api, movie_api } from "../services/api";
+import { books_api, movies_api, rankings_api } from "../../services/api";
 
 const RankingPage = () => {
   const [rankings, setRankings] = useState([]);
@@ -10,7 +10,7 @@ const RankingPage = () => {
 
   const getRankings = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/rankings/all/${userId}`);
+      const response = await axios.get(`${rankings_api}/all/${userId}`);
       setRankings(response.data);
     } catch (error) {
       console.error("Error fetching rankings:", error);
@@ -19,7 +19,7 @@ const RankingPage = () => {
 
   const getMediaDetails = async (mediaId, mediaType) => {
     try {
-      const api = mediaType === "book" ? book_api : movie_api;
+      const api = mediaType === "book" ? books_api : movies_api;
       const response = await axios.get(`${api}/${mediaId}`);
       setMediaDetails((prevDetails) => ({
         ...prevDetails,

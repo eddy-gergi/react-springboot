@@ -25,12 +25,18 @@ const SearchPage = () => {
       const books = booksResponse.data.map((book) => ({
         id: book.id,
         title: book.title,
+        author: book.author,
+        genre: book.genre,
+        publishedyear: book.publishedyear,
         type: "Book",
       }));
 
       const movies = moviesResponse.data.map((movie) => ({
         id: movie.id,
         title: movie.title,
+        director: movie.director,
+        genre: movie.genre,
+        releaseyear: movie.releaseyear,
         type: "Movie",
       }));
 
@@ -47,7 +53,7 @@ const SearchPage = () => {
       fetchResults();
     }, 300);
 
-    return () => clearTimeout(debounceFetch); 
+    return () => clearTimeout(debounceFetch);
   }, [searchQuery]);
 
   const handleSearch = (e) => {
@@ -64,10 +70,8 @@ const SearchPage = () => {
 
   return (
     <div className="container mx-auto mt-8 px-4">
-      {/* Page Header */}
       <h1 className="text-4xl font-bold mb-4 text-center">Search</h1>
 
-      {/* Search Input */}
       <div className="mb-8 flex justify-center">
         <input
           type="text"
@@ -78,12 +82,10 @@ const SearchPage = () => {
         />
       </div>
 
-      {/* Loading Indicator */}
       {isLoading && (
         <p className="text-center text-gray-600 mt-4">Loading...</p>
       )}
 
-      {/* Search Results */}
       {results.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {results.map((item) => (
@@ -92,7 +94,34 @@ const SearchPage = () => {
               className="rounded-lg shadow-lg overflow-hidden bg-slate-700 p-4 transition-transform duration-300 hover:scale-105 hover:bg-slate"
             >
               <h2 className="text-xl font-bold mb-2 truncate">{item.title}</h2>
-              <p className="text-gray-600 mb-2 italic">{item.type}</p>
+              <p className="text-gray-500 mb-2 italic">{item.type}</p>
+
+              {item.type === "Book" && (
+                <>
+                  <p className="text-gray-100 mb-2">
+                    <strong>Author:</strong> {item.author}
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    <strong>Genre:</strong> {item.genre}
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    <strong>Published Year:</strong> {item.publishedyear}
+                  </p>
+                </>
+              )}
+              {item.type === "Movie" && (
+                <>
+                  <p className="text-gray-100 mb-2">
+                    <strong>Director:</strong> {item.director}
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    <strong>Genre:</strong> {item.genre}
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    <strong>Release Year:</strong> {item.releaseyear}
+                  </p>
+                </>
+              )}
 
               <div className="mt-4 flex justify-between">
                 <button
@@ -108,7 +137,8 @@ const SearchPage = () => {
       ) : (
         !isLoading && (
           <p className="text-center text-gray-600 mt-8 text-lg">
-            No results found for <span className="font-bold">"{searchQuery}"</span>
+            No results found for{" "}
+            <span className="font-bold">"{searchQuery}"</span>
           </p>
         )
       )}

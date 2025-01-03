@@ -4,7 +4,8 @@ import com.info404.backend.api.OrderByColumn;
 
 public enum AdminActionsOrderByColumn implements OrderByColumn {
     adminId("adminId"),
-    actionInfo("actionInfo");
+    actionInfo("actionInfo"),
+    actionTimestamp("actionTimestamp");
 
     private final String column;
 

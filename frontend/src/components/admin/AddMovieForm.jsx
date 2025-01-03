@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import CustomFormField from "../CustomFormField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { movieFormValidation } from "../../lib/validation"; 
-import axios from "axios";  
+import { movieFormValidation } from "../../lib/validation";
+import axios from "axios";
 import SubmitButton from "../SubmitButton";
+import { movies_api, admin_actions_api } from "../../services/api";
 
 const AddMovieForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-
-  // Initialize form using react-hook-form and Zod resolver
   const form = useForm({
     resolver: zodResolver(movieFormValidation),
     defaultValues: {
@@ -24,18 +23,46 @@ const AddMovieForm = () => {
 
   const handleAddMovie = async (values) => {
     setIsLoading(true);
-    console.log("Form values:", values);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/movies/add", values);
-      console.log("Movie added successfully:", response.data);
-      alert("Movie added successfully!");
-    } catch (error) {
-      console.error("Failed to add movie:", error.message);
-      alert("Failed to add movie. Please try again.");
-    }
+      const moviePayload = {
+        id: crypto.randomUUID(),
+        title: values.title.trim(),
+        director: values.director.trim(),
+        genre: values.genre.trim(),
+        releaseyear: parseInt(values.releaseyear, 10),
+        description: values.description.trim(),
+        url: values.imgUrl.trim(),
+      };
 
-    setIsLoading(false);
+      console.log("Sending payload:", moviePayload);
+
+      const response = await axios.post(movies_api + "/add", moviePayload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      alert("Movie added successfully!");
+      console.log(response.data);
+      const adminId = "4be62897-6e9a-43ab-a488-d366859fa020"; // Replace with dynamic Id
+      const actionInfo = `Added movie:  ${values.title}`;
+      const actionTimestamp = new Date().toISOString();
+
+      const actionPayload = {
+        adminId,
+        actionInfo,
+        actionTimestamp,
+      };
+
+      await axios.post(admin_actions_api + "/add", actionPayload);
+    } catch (error) {
+      console.error(
+        "Failed to add movie or log action:",
+        error.response?.data || error.message
+      );
+      alert("Failed to add movie. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -49,7 +76,7 @@ const AddMovieForm = () => {
           name="title"
           label="Movie Title"
           placeholder="Enter the movie title"
-          errorMessage={form.formState.errors.title?.message} // Pass error message for title
+          errorMessage={form.formState.errors.title?.message}
         />
         <CustomFormField
           fieldType="text"
@@ -57,7 +84,7 @@ const AddMovieForm = () => {
           name="director"
           label="Director"
           placeholder="Enter the director's name"
-          errorMessage={form.formState.errors.director?.message} // Pass error message for director
+          errorMessage={form.formState.errors.director?.message}
         />
         <CustomFormField
           fieldType="text"
@@ -65,7 +92,7 @@ const AddMovieForm = () => {
           name="genre"
           label="Genre"
           placeholder="Enter the genre"
-          errorMessage={form.formState.errors.genre?.message} // Pass error message for genre
+          errorMessage={form.formState.errors.genre?.message}
         />
         <CustomFormField
           fieldType="text"
@@ -73,7 +100,7 @@ const AddMovieForm = () => {
           name="releaseyear"
           label="Release Year"
           placeholder="Enter the release year"
-          errorMessage={form.formState.errors.releaseyear?.message} // Pass error message for release year
+          errorMessage={form.formState.errors.releaseyear?.message}
         />
         <CustomFormField
           fieldType="text"
@@ -81,7 +108,7 @@ const AddMovieForm = () => {
           name="description"
           label="Description"
           placeholder="Enter a brief description"
-          errorMessage={form.formState.errors.description?.message} // Pass error message for description
+          errorMessage={form.formState.errors.description?.message}
         />
         <CustomFormField
           fieldType="url"
@@ -89,7 +116,7 @@ const AddMovieForm = () => {
           name="imgUrl"
           label="Movie Image URL"
           placeholder="Enter the image URL"
-          errorMessage={form.formState.errors.imgUrl?.message} // Pass error message for image URL
+          errorMessage={form.formState.errors.imgUrl?.message}
         />
         <SubmitButton isLoading={isLoading}>Add Movie</SubmitButton>
       </form>

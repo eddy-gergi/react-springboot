@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { books_api, movies_api } from "../services/api";
 
 const MainPage = () => {
   const [books, setBooks] = useState([]);
@@ -10,7 +11,7 @@ const MainPage = () => {
   const getAllBooks = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/books/all?orderByDirection=descending&limit=3"
+        `${books_api}/all?orderByDirection=descending&limit=3`,
       );
       setBooks(response.data);
     } catch (error) {
@@ -21,7 +22,7 @@ const MainPage = () => {
   const getAllMovies = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/movies/all?orderByDirection=descending&limit=3"
+        `${movies_api}/all?orderByDirection=descending&limit=3`
       );
       setMovies(response.data);
     } catch (error) {

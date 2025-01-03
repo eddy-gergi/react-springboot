@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { book_api, carts_api } from "../services/api";
+import { books_api, carts_api } from "../../services/api";
 
 const BookComponent = () => {
   const { id } = useParams();
@@ -12,7 +12,7 @@ const BookComponent = () => {
 
   const findMedia = async () => {
     try {
-      const response = await axios.get(book_api + "/" + id);
+      const response = await axios.get(books_api + "/" + id);
       setMedia(response.data);
     } catch (error) {
       console.error("Failed to fetch media:", error.message);
@@ -51,10 +51,13 @@ const BookComponent = () => {
           />
         </div>
         <div className="p-6 flex flex-col justify-between md:w-1/2 w-full">
-          <h1 className="text-3xl font-bold mb-2">{media.title || "Loading..."}</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            {media.title || "Loading..."}
+          </h1>
           <h2 className="text-gray-500 mb-4">
             {media.author}, {media.publishedyear}
           </h2>
+          <h2 className="text-gray-500 mb-4">Genre: {media.genre}</h2>
           <p className="text-gray-600 mb-4">{media.description}</p>
           <button
             onClick={handleAddToCart}

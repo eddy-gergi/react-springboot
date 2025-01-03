@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { users_api, books_api, movies_api, admin_actions_api } from "../../services/api";
 
 const UserStats = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -9,14 +10,17 @@ const UserStats = () => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("ascending");
 
+  const adminId = "4be62897-6e9a-43ab-a488-d366859fa020"; // Replace with dynamic Id
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [usersResponse, moviesResponse, booksResponse] = await Promise.all([
-          axios.get("http://localhost:8080/api/users/all"),
-          axios.get("http://localhost:8080/api/movies/all"),
-          axios.get("http://localhost:8080/api/books/all"),
-        ]);
+        const [usersResponse, moviesResponse, booksResponse] =
+          await Promise.all([
+            axios.get(users_api + "/all"),
+            axios.get(movies_api + "/all"),
+            axios.get(books_api + "/all"),
+          ]);
         setUsers(usersResponse.data);
         setMovies(moviesResponse.data);
         setBooks(booksResponse.data);
@@ -37,19 +41,34 @@ const UserStats = () => {
   const handleDelete = async (id, category) => {
     try {
       const apiUrl =
-        category === "movies"
-          ? `http://localhost:8080/api/movies/${id}`
-          : `http://localhost:8080/api/books/${id}`;
+        category === "movies" ? `${movies_api}/${id}` : `${books_api}/${id}`;
 
       await axios.delete(apiUrl);
+
+      const deletedItem =
+        category === "movies"
+          ? movies.find((movie) => movie.id === id)
+          : books.find((book) => book.id === id);
 
       if (category === "movies") {
         setMovies(movies.filter((movie) => movie.id !== id));
       } else if (category === "books") {
         setBooks(books.filter((book) => book.id !== id));
       }
+
+      const actionInfo = `Deleted ${category.slice(0, -1)}: ${deletedItem.title}`;
+      const actionTimestamp = new Date().toISOString();
+
+      const actionPayload = {
+        adminId,
+        actionInfo,
+        actionTimestamp,
+      };
+
+      await axios.post(admin_actions_api + "/add", actionPayload);
+      console.log("Admin action logged:", actionPayload);
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Error deleting item or logging action:", error);
     }
   };
 
@@ -59,8 +78,8 @@ const UserStats = () => {
     try {
       const apiUrl =
         selectedCategory === "movies"
-          ? `http://localhost:8080/api/movies/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`
-          : `http://localhost:8080/api/books/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`;
+          ? `${movies_api}/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`
+          : `${books_api}/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`;
 
       const response = await axios.get(apiUrl);
 

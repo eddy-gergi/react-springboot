@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { format, isToday, isYesterday, parseISO } from "date-fns";
-import { carts_api, book_api, movie_api } from "../services/api";
+import { carts_api, books_api, movies_api, rankings_api } from "../../services/api";
 
 const CartPage = () => {
   const userId = sessionStorage.getItem("userId");
@@ -10,7 +10,7 @@ const CartPage = () => {
   const [mediaDetails, setMediaDetails] = useState({});
   const [rankings, setRankings] = useState({});
 
-  // Fetch cart items
+  
   const getCartItems = async () => {
     try {
       const response = await axios.get(`${carts_api}/${userId}`);
@@ -20,12 +20,12 @@ const CartPage = () => {
     }
   };
 
-  // Fetch media details for the items in the cart
+  
   const getMediaDetails = async () => {
     try {
       const mediaDetailsMap = {};
       for (const item of cartItems) {
-        const api = item.mediaType === "book" ? book_api : movie_api;
+        const api = item.mediaType === "book" ? books_api : movies_api;
         const response = await axios.get(`${api}/${item.mediaId}`);
         mediaDetailsMap[item.id] = response.data;
       }
@@ -35,10 +35,10 @@ const CartPage = () => {
     }
   };
 
-  // Fetch rankings for the user
+  
   const getRankings = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/rankings/all/${userId}`);
+      const response = await axios.get(`${rankings_api}/all/${userId}`);
       const rankingsMap = response.data.reduce((map, ranking) => {
         map[ranking.mediaId] = ranking.ranking;
         return map;
@@ -64,7 +64,6 @@ const CartPage = () => {
     const selectedItem = cartItems.find((item) => item.id === id);
     if (!selectedItem) return;
   
-    // Ensure ranking is a valid number
     if (ranking === null || ranking === undefined || isNaN(ranking)) {
       alert("Invalid ranking value.");
       return;
@@ -74,14 +73,14 @@ const CartPage = () => {
       console.log("Updating ranking:", { userId, mediaId: selectedItem.mediaId, ranking }); 
   
       if (!rankings[selectedItem.mediaId]) {
-        await axios.post(`http://localhost:8080/api/rankings/${userId}/addRanking`, {
+        await axios.post(`${rankings_api}/${userId}/addRanking`, {
           mediaId: selectedItem.mediaId,
           mediaType: selectedItem.mediaType,
           ranking,
         });
         alert("Ranking added successfully!");
       } else {
-        await axios.put(`http://localhost:8080/api/rankings/${userId}`, {
+        await axios.put(`${rankings_api}/${userId}`, {
           userId,
           mediaId: selectedItem.mediaId,
           mediaType: selectedItem.mediaType,

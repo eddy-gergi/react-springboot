@@ -63,8 +63,6 @@ const AdminLoginPage = () => {
             Login as Admin
           </button>
         </form>
-
-        {/* Return to Home Button */}
         <button
           onClick={() => navigate("/")}
           className="btn btn-outline mt-4 w-full"

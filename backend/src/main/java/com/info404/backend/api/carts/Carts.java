@@ -7,15 +7,20 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public class Carts {
-    @NotNull @NotEmpty
+    @NotNull
     private UUID id;
-    @NotNull @NotEmpty
+
+    @NotNull
     private UUID userId;
-    @NotNull @NotEmpty
+
+    @NotNull
     private UUID mediaId;
-    @NotNull @NotEmpty
+
+    @NotNull
+    @NotEmpty
     private String mediaType;
-    @NotNull @NotEmpty
+
+    @NotNull
     private LocalDateTime addedAt;
 
     public UUID getId() {

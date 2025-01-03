@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { carts_api } from "../services/api";
+import { carts_api, books_api, movies_api } from "../../services/api";
 
 const AllBooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -10,9 +10,10 @@ const AllBooksPage = () => {
 
   const getAllBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/books/all?orderByColumn=title&orderByDirection=ascending", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${books_api}/all?orderByColumn=title&orderByDirection=ascending`,
+        { withCredentials: true }
+      );
       setBooks(response.data);
     } catch (error) {
       console.error("Failed to fetch books:", error.message);
@@ -20,20 +21,25 @@ const AllBooksPage = () => {
   };
 
   const addToCart = async (id) => {
-    console.log("Book ID to add to cart:", id); // Debugging
+    console.log("Book ID to add to cart:", id);
     try {
       const payload = {
         mediaId: id,
         mediaType: "book",
       };
-      console.log("Sending payload:", payload); // Debugging
+      console.log("Sending payload:", payload);
       const response = await axios.post(`${carts_api}/${userId}/add`, payload, {
         withCredentials: true,
       });
       alert("Item has been added to your cart!");
     } catch (error) {
-      console.error("Failed to add media to cart:", error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || "Something went wrong!"}`);
+      console.error(
+        "Failed to add media to cart:",
+        error.response?.data || error.message
+      );
+      alert(
+        `Error: ${error.response?.data?.message || "Something went wrong!"}`
+      );
     }
   };
 

@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserFormValidation } from "@/lib/validation"; 
-import SubmitButton from "../components/SubmitButton";
-import CustomFormField from "../components/CustomFormField";
+import CustomFormField from "../../components/CustomFormField";
 import axios from "axios";
-import { users_api } from "../services/api"; // Assuming the API endpoint is in this file
+import { users_api } from "../../services/api";
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,9 +30,9 @@ const LoginPage = () => {
 
       console.log("Login Successful:", response.data);
       if (response.status === 200) {
-        // Store the user information or token in the sessionStorage or context
+        
         sessionStorage.setItem("userId", response.data.id);
-        navigate("/"); // Redirect to home or dashboard after successful login
+        navigate("/"); 
       } else {
         alert("Login failed. Please check your credentials.");
       }
@@ -69,7 +68,7 @@ const LoginPage = () => {
           icon="src/assets/password.svg"
         />
         
-        {/* Submit button */}
+        
         <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>Login</button>
       </form>
 
