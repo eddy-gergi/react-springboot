@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserFormValidation } from "@/lib/validation"; 
-import CustomFormField from "../../components/CustomFormField";
+import { LoginFormValidation } from "../../lib/validation";
 import axios from "axios";
+import CustomFormField from "../../components/CustomFormField";
+import SubmitButton from "../../components/SubmitButton";
 import { users_api } from "../../services/api";
 
 const LoginPage = () => {
@@ -12,7 +13,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const form = useForm({
-    resolver: zodResolver(UserFormValidation),
+    resolver: zodResolver(LoginFormValidation),
     defaultValues: {
       email: "",
       password: "",
@@ -24,30 +25,29 @@ const LoginPage = () => {
 
     try {
       const response = await axios.get(`${users_api}/login`, {
-        email: values.email,
-        password: values.password,
+        params: {
+          email: values.email,
+          password: values.password,
+        },
       });
 
-      console.log("Login Successful:", response.data);
-      if (response.status === 200) {
-        
+      if (response.status === 200 && response.data) {
         sessionStorage.setItem("userId", response.data.id);
-        navigate("/"); 
+        console.log("ID: ", response.data.id);
+        navigate("/");
       } else {
         alert("Login failed. Please check your credentials.");
       }
-    } catch (error) {
-      console.error("Login Error:", error.response?.data || error.message);
+    } catch {
       alert("Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-6 rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto mt-12 p-6 rounded-lg shadow-lg bg-base-300">
       <h2 className="text-center text-2xl font-bold mb-4">Login</h2>
-
       <form onSubmit={form.handleSubmit(handleLogin)}>
         <CustomFormField
           name="email"
@@ -56,7 +56,6 @@ const LoginPage = () => {
           placeholder="Enter your email"
           fieldType="email"
           errorMessage={form.formState.errors.email?.message}
-          icon="src/assets/email.svg" 
         />
         <CustomFormField
           name="password"
@@ -65,20 +64,16 @@ const LoginPage = () => {
           placeholder="Enter your password"
           fieldType="password"
           errorMessage={form.formState.errors.password?.message}
-          icon="src/assets/password.svg"
         />
-        
-        
-        <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading}>Login</button>
+        <SubmitButton isLoading={isLoading}>Login</SubmitButton>
       </form>
-
       <p className="text-center mt-4">
         Don't have an account?{" "}
         <Link to="/signup" className="text-blue-500 font-bold">
           Sign Up
         </Link>
         <br />
-        Are you an admin? If yes, {" "}
+        Are you an admin?{" "}
         <Link to="/adminlogin" className="text-blue-500 font-bold">
           Click here
         </Link>

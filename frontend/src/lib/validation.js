@@ -21,6 +21,17 @@ export const UserFormValidation = z.object({
     .regex(/\d/, { message: "Password must contain at least one number." }),
 });
 
+export const LoginFormValidation = z.object({
+  email: z
+    .string()
+    .email("Invalid email address")
+    .nonempty("Email is required"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .nonempty("Password is required"),
+});
+
 
 // Define the schema for validating the form data
 export const bookFormValidation = z.object({
@@ -54,8 +65,6 @@ export const adminFormValidation = z.object({
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
   });
-
-  // validation.js
 
 
 

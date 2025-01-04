@@ -17,6 +17,10 @@ import AddMovieForm from "./components/admin/AddMovieForm";
 import AddBookForm from "./components/admin/AddBookForm";
 import AddAdminForm from "./components/admin/AddAdminForm";
 import SearchPage from "./pages/actions/SearchPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import NotAllowedPage from "./pages/NotAllowedPage";
+import UpdateMovieForm from "./components/admin/UpdateMovieForm";
+import UpdateBookForm from "./components/admin/UpdateBookForm";
 
 const AppContent = () => {
   const location = useLocation();
@@ -39,10 +43,11 @@ const AppContent = () => {
           <Route path="/movie/:id" element={<MovieComponent />} />
           <Route path="/adminlogin" element={<AdminLoginPage />} />
           <Route path="/admin-dashboard" element={<AdminPage />} />
-          <Route path="/admin-dashboard/add-movie" element={<AddMovieForm />} />
-          <Route path="/admin-dashboard/add-book" element={<AddBookForm />} />
-          <Route path="/admin-dashboard/add-admin" element={<AddAdminForm />} />
+          <Route path="/admin-dashboard/update-movie/:id" element={<UpdateMovieForm />} />
+          <Route path="/admin-dashboard/update-book/:id" element={<UpdateBookForm />} />
           <Route path="/search" element={<SearchPage/>} />
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/not-allowed" element={<NotAllowedPage />}/>
         </Routes>
       </main>
 

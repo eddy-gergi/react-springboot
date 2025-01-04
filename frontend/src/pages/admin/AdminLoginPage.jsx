@@ -1,21 +1,44 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { users_api } from "../../services/api"; 
 
 const AdminLoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleLogin = async (values) => {
+    setIsLoading(true);
+
+    try {
+      const response = await axios.get(`${users_api}/login`, {
+        params: {
+          email: values.email,
+          password: values.password,
+        },
+      });
+
+      if (response.status === 200 && response.data && response.data.role === "admin") { 
+        sessionStorage.setItem("adminId", response.data.id); 
+        console.log("ID: ", response.data.id);
+        navigate("/admin-dashboard"); 
+      } else {
+        setError("Login failed. Please check your credentials.");
+      }
+    } catch {
+      setError("Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (email === "admin@libraryhub.com" && password === "admin123") {
-      alert("Admin login successful!");
-      navigate("/admin-dashboard");
-    } else {
-      setError("Invalid email or password");
-    }
+    const values = { email, password };
+    handleLogin(values); 
   };
 
   return (
@@ -58,11 +81,13 @@ const AdminLoginPage = () => {
 
           <button
             type="submit"
-            className="btn btn-primary  w-full mt-4"
+            className="btn btn-primary w-full mt-4"
+            disabled={isLoading} 
           >
-            Login as Admin
+            {isLoading ? "Logging in..." : "Login as Admin"}
           </button>
         </form>
+
         <button
           onClick={() => navigate("/")}
           className="btn btn-outline mt-4 w-full"

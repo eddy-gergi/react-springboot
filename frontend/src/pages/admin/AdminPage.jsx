@@ -1,20 +1,28 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import UserStats from "../../components/admin/UserStats";
 import AddMovieForm from "../../components/admin/AddMovieForm";
 import AddBookForm from "../../components/admin/AddBookForm";
 import AddAdminForm from "../../components/admin/AddAdminForm";
 import AdminActions from "../../components/admin/AdminActions";
 
+
+
 const AdminPage = () => {
   const [selectedOption, setSelectedOption] = useState("UserStats");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const adminId = sessionStorage.getItem("adminId");
+    if (!adminId) {
+      navigate("/not-allowed"); 
+    }
+  }, [navigate]);
+
   const handleSignOut = () => {
-    // Clear any auth tokens or session data
-    localStorage.removeItem("authToken"); // Example: remove auth token
-    alert("Signing out ...")
-    navigate("/"); // Redirect to login page
+    sessionStorage.removeItem("adminId");
+    alert("Signing out ...");
+    navigate("/");
   };
 
   const renderContent = () => {
@@ -39,7 +47,7 @@ const AdminPage = () => {
       <div className="w-1/4 h-7 text-white p-4">
         <h2 className="text-2xl font-bold mb-4">Admin Menu</h2>
         <nav>
-          {[
+          {[  
             { name: "User Stats", key: "UserStats" },
             { name: "Add Movie", key: "AddMovie" },
             { name: "Add Book", key: "AddBook" },
@@ -64,7 +72,9 @@ const AdminPage = () => {
         </nav>
       </div>
 
-      <div className="w-3/4 p-6 overflow-auto bg-base-100">{renderContent()}</div>
+      <div className="w-3/4 p-6 overflow-auto bg-base-100">
+        {renderContent()}
+      </div>
     </div>
   );
 };

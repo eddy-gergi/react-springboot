@@ -27,12 +27,18 @@ public class RankingsService {
     public void removeRankingEntry(UUID userId, UUID mediaId) {
         this.rankingsRepository.removeRankingEntry(userId, mediaId);
     }
+
     public void updateRankingEntry(Rankings ranking) {
         this.rankingsRepository.updateRankingEntry(ranking);
     }
+
     public List<Rankings> getRankingByUserId(UUID userId, ApiRequest apiRequest) {
-        return this.rankingsRepository.selectByUserId(userId, apiRequest);
+        String orderByColumn = apiRequest.getOrderByColumn() != null ? apiRequest.getOrderByColumn().toString() : null;
+        String orderByDirection = apiRequest.getOrderByDirection() != null ? apiRequest.getOrderByDirection().toString()
+                : null;
+        return this.rankingsRepository.selectByUserId(userId, orderByColumn, orderByDirection);
     }
+
     public List<Rankings> getRankingByMediaId(UUID mediaId) {
         return this.rankingsRepository.selectByMediaId(mediaId);
     }

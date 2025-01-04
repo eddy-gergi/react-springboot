@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -49,15 +50,15 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public Users login(@Valid @RequestBody LoginRequest loginRequest) {
-        Users userFromDb = this.userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-
+    public Users login(@RequestParam String email, @RequestParam String password) {
+        Users userFromDb = this.userService.login(email, password);
         if (userFromDb != null) {
-            System.out.println("Login successful for: " + loginRequest.getEmail());
-            return userFromDb; 
+            System.out.println("Login successful for: " + email);
+            return userFromDb;
         } else {
-            System.out.println("Login failed for: " + loginRequest.getEmail());
-            return null; 
+            System.out.println("Login failed for: " + email);
+            return null;
         }
     }
+
 }

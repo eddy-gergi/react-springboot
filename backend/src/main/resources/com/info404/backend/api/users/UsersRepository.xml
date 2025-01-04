@@ -20,8 +20,9 @@
     <delete id="deleteById"> DELETE FROM users WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
 
-    <insert id="insert" parameterType="Users"> INSERT INTO users(name,email,password) VALUES
-        (#{name},#{email},#{password}) </insert>
+    <insert id="insert" parameterType="Users"> INSERT INTO users (name, email, password, role)
+        VALUES (#{name}, #{email}, #{password}, #{role}) </insert>
+
 
     <update id="updateById" parameterType="Users"> UPDATE users SET name = #{name}, email =
         #{email}, password = #{password} WHERE id = #{id, javaType=UUID, jdbcType=OTHER,

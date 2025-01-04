@@ -10,8 +10,9 @@ const MainPage = () => {
 
   const getAllBooks = async () => {
     try {
+      const offset = Math.floor(Math.random() * 20);
       const response = await axios.get(
-        `${books_api}/all?orderByDirection=descending&limit=3`,
+        `${books_api}/all?orderByDirection=descending&limit=4&offset=${offset}`
       );
       setBooks(response.data);
     } catch (error) {
@@ -21,8 +22,9 @@ const MainPage = () => {
 
   const getAllMovies = async () => {
     try {
+      const offset = Math.floor(Math.random() * 20);
       const response = await axios.get(
-        `${movies_api}/all?orderByDirection=descending&limit=3`
+        `${movies_api}/all?orderByDirection=descending&limit=4&offset=${offset}`
       );
       setMovies(response.data);
     } catch (error) {
@@ -36,57 +38,59 @@ const MainPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate flex flex-col items-center">
-      <div className="text-center bg-base-100 shadow-xl rounded-lg p-8 mt-8 max-w-4xl w-full mx-4">
-        <h1 className="text-5xl font-bold text-primary mb-2">
+    <div className="min-h-screen bg-base-200 flex flex-col items-center">
+      {/* Header */}
+      <header className="text-center bg-base-100 shadow-xl rounded-lg p-10 mt-8 max-w-4xl w-full mx-4">
+        <h1 className="text-6xl font-extrabold text-primary mb-4">
           Welcome to LibraFlick
         </h1>
-        <p className="text-gray-600 mt-2 text-lg">
+        <p className="text-gray-700 text-xl mb-6">
           Explore your favorite movies, books, and more!
         </p>
-        <div className="mt-4 flex justify-center gap-6">
+        <div className="flex justify-center gap-8">
           <a
             href="/books"
-            className="btn btn-accent px-6 py-2 rounded-lg hover:bg-accent hover:text-black transition-all"
+            className="btn btn-accent px-8 py-3 rounded-lg hover:bg-accent hover:text-black transition-all"
           >
             📚 View Books
           </a>
           <a
             href="/movies"
-            className="btn btn-secondary px-6 py-2 rounded-lg hover:bg-secondary hover:text-black transition-all"
+            className="btn btn-secondary px-8 py-3 rounded-lg hover:bg-secondary hover:text-black transition-all"
           >
             🎬 View Movies
           </a>
         </div>
-      </div>
+      </header>
+
       {/* Movies Section */}
-      <div className="mt-12 w-full max-w-6xl mx-auto p-4">
-        <p className="text-5xl text-center font-bold text-primary mb-4">
-          🎬 Movies
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="w-full max-w-6xl mx-auto p-4 mt-12">
+        <p className="text-5xl text-center font-bold text-primary mb-8">🎬 Movies</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {movies.map((movie) => (
             <div
               key={movie.id}
-              className="rounded-lg shadow-lg overflow-hidden flex flex-col h-96 bg-gray-50"
+              className="card card-compact bg-gray-300 hover:bg-gray-400 shadow-xl transition-all"
             >
-              <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+              <figure>
                 <img
-                  src={movie.imgUrl}
+                  src={movie.url}
                   alt={movie.title}
-                  className="object-cover w-full h-full"
+                  className="object-cover h-48 w-full rounded-t-lg"
                 />
-              </div>
-              <div className="p-4">
-                <p className="font-bold text-lg text-center truncate">
-                  {movie.title}
-                </p>
-                <div className="mt-4 flex justify-center">
+              </figure>
+              <div className="card-body p-4">
+                <h2 className="card-title text-xl text-center truncate text-gray-800">{movie.title}</h2>
+                <div className="text-center text-sm text-gray-600">
+                  <p>{movie.director}</p>
+                  <p>{movie.releaseyear}</p>
+                </div>
+                <div className="card-actions justify-center mt-4">
                   <button
-                    className="btn btn-outline btn-secondary px-4 py-2"
+                    className="btn btn-outline btn-primary w-full"
                     onClick={() => navigate(`/movie/${movie.id}`)}
                   >
-                    View
+                    View Movie
                   </button>
                 </div>
               </div>
@@ -96,33 +100,33 @@ const MainPage = () => {
       </div>
 
       {/* Books Section */}
-      <div className="mt-12 w-full max-w-6xl mx-auto p-4">
-        <p className="text-5xl text-center font-bold text-primary mb-4">
-          📚 Books
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="w-full max-w-6xl mx-auto p-4 mt-12">
+        <p className="text-5xl text-center font-bold text-primary mb-8">📚 Books</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {books.map((book) => (
             <div
               key={book.id}
-              className="rounded-lg shadow-lg overflow-hidden flex flex-col h-96 bg-gray-50"
+              className="card card-compact bg-gray-300 hover:bg-gray-400 shadow-xl transition-all"
             >
-              <div className="h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+              <figure>
                 <img
                   src={book.url}
                   alt={book.title}
-                  className="object-cover w-full h-full"
+                  className="object-cover h-48 w-full rounded-t-lg"
                 />
-              </div>
-              <div className="p-4">
-                <p className="font-bold text-lg text-center truncate">
-                  {book.title}
-                </p>
-                <div className="mt-4 flex justify-center">
+              </figure>
+              <div className="card-body p-4">
+                <h2 className="card-title text-xl text-center truncate text-gray-800">{book.title}</h2>
+                <div className="text-center text-sm text-gray-600">
+                  <p>{book.author}</p>
+                  <p>{book.publishedyear}</p>
+                </div>
+                <div className="card-actions justify-center mt-4">
                   <button
-                    className="btn btn-outline btn-secondary px-4 py-2"
+                    className="btn btn-outline btn-primary w-full"
                     onClick={() => navigate(`/book/${book.id}`)}
                   >
-                    View
+                    View Book
                   </button>
                 </div>
               </div>

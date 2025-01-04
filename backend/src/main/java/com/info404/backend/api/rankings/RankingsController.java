@@ -29,10 +29,15 @@ public class RankingsController {
     private RankingsService rankingsService;
 
     @GetMapping("all/{userId}")
-    public List<Rankings> getRankingByUserId(@PathVariable("userId") UUID userId, @RequestParam(name="orderByColumn", required=false)RankingOrderByColumn rankingOrderByColumn, @RequestParam(name="orderByDirection", required=false)OrderByDirection orderByDirection) {
-        ApiRequest apiRequest=new ApiRequest();
+    public List<Rankings> getRankingByUserId(
+            @PathVariable("userId") UUID userId,
+            @RequestParam(name = "orderByColumn", required = false) RankingOrderByColumn rankingOrderByColumn,
+            @RequestParam(name = "orderByDirection", required = false) OrderByDirection orderByDirection) {
+
+        ApiRequest apiRequest = new ApiRequest();
         apiRequest.setOrderByColumn(rankingOrderByColumn);
         apiRequest.setOrderByDirection(orderByDirection);
+
         return rankingsService.getRankingByUserId(userId, apiRequest);
     }
 
@@ -57,31 +62,30 @@ public class RankingsController {
     }
 
     @PutMapping("{id}")
-public void updateRankingEntry(@PathVariable("id") UUID id, @RequestBody Map<String, Object> requestBody) {
-    System.out.println("Request Body: " + requestBody);
+    public void updateRankingEntry(@PathVariable("id") UUID id, @RequestBody Map<String, Object> requestBody) {
+        System.out.println("Request Body: " + requestBody);
 
-    UUID userId = UUID.fromString((String) requestBody.get("userId"));
-    UUID mediaId = UUID.fromString((String) requestBody.get("mediaId"));
-    String mediaType = (String) requestBody.get("mediaType");
-    Integer ranking = (Integer) requestBody.get("ranking");
+        UUID userId = UUID.fromString((String) requestBody.get("userId"));
+        UUID mediaId = UUID.fromString((String) requestBody.get("mediaId"));
+        String mediaType = (String) requestBody.get("mediaType");
+        Integer ranking = (Integer) requestBody.get("ranking");
 
-    System.out.println("Ranking received: " + ranking);  // Log the ranking value received
+        System.out.println("Ranking received: " + ranking); // Log the ranking value received
 
-    if (!mediaType.equals("book") && !mediaType.equals("movie")) {
-        throw new IllegalArgumentException("Invalid mediaType: must be 'book' or 'movie'");
+        if (!mediaType.equals("book") && !mediaType.equals("movie")) {
+            throw new IllegalArgumentException("Invalid mediaType: must be 'book' or 'movie'");
+        }
+
+        Rankings rankingObj = new Rankings();
+        rankingObj.setId(id);
+        rankingObj.setUserId(userId);
+        rankingObj.setMediaId(mediaId);
+        rankingObj.setMediaType(mediaType);
+        rankingObj.setRanking(ranking);
+
+        this.rankingsService.updateRankingEntry(rankingObj);
     }
 
-    Rankings rankingObj = new Rankings();
-    rankingObj.setId(id);
-    rankingObj.setUserId(userId);
-    rankingObj.setMediaId(mediaId);
-    rankingObj.setMediaType(mediaType);
-    rankingObj.setRanking(ranking);
-
-    this.rankingsService.updateRankingEntry(rankingObj);
-}
-
-    
     @GetMapping("{mediaId}")
     public List<Rankings> getRankingByMediaId(@PathVariable("mediaId") UUID mediaId) {
         return this.rankingsService.getRankingByMediaId(mediaId);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { books_api, movies_api } from "../../services/api";
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,8 +19,8 @@ const SearchPage = () => {
 
     try {
       const [booksResponse, moviesResponse] = await Promise.all([
-        axios.get(`http://localhost:8080/api/books/all?search=${searchQuery}`),
-        axios.get(`http://localhost:8080/api/movies/all?search=${searchQuery}`),
+        axios.get(`${books_api}/all?search=${searchQuery}`),
+        axios.get(`${movies_api}/all?search=${searchQuery}`),
       ]);
 
       const books = booksResponse.data.map((book) => ({

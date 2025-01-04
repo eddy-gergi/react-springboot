@@ -5,12 +5,20 @@ import { carts_api, books_api, movies_api, rankings_api } from "../../services/a
 
 const CartPage = () => {
   const userId = sessionStorage.getItem("userId");
-  //const userId = "5fdc6f3c-9374-4505-a754-d87f655538c3";
   const [cartItems, setCartItems] = useState([]);
   const [mediaDetails, setMediaDetails] = useState({});
   const [rankings, setRankings] = useState({});
 
-  
+  if (!userId) {
+    return (
+      <div className="container mx-auto mt-8 text-center">
+        <h1 className="text-4xl font-bold mb-4">Oops!</h1>
+        <p className="text-xl mb-4">You need to log in to view your cart.</p>
+        <p className="text-lg">Please log in to manage your cart and rankings. 🔒</p>
+      </div>
+    );
+  }
+
   const getCartItems = async () => {
     try {
       const response = await axios.get(`${carts_api}/${userId}`);
@@ -20,7 +28,6 @@ const CartPage = () => {
     }
   };
 
-  
   const getMediaDetails = async () => {
     try {
       const mediaDetailsMap = {};
@@ -35,7 +42,6 @@ const CartPage = () => {
     }
   };
 
-  
   const getRankings = async () => {
     try {
       const response = await axios.get(`${rankings_api}/all/${userId}`);
@@ -70,7 +76,7 @@ const CartPage = () => {
     }
   
     try {
-      console.log("Updating ranking:", { userId, mediaId: selectedItem.mediaId, ranking }); 
+      console.log("Updating ranking:", { userId, mediaId: selectedItem.mediaId, ranking });
   
       if (!rankings[selectedItem.mediaId]) {
         await axios.post(`${rankings_api}/${userId}/addRanking`, {
@@ -104,7 +110,6 @@ const CartPage = () => {
       alert(`Failed to ${rankings[selectedItem.mediaId] ? "update" : "add"} ranking. Please try again.`);
     }
   };
-  
 
   const handleRemove = async (id, mediaId) => {
     const selectedItem = cartItems.find((item) => item.id === id);
@@ -115,7 +120,7 @@ const CartPage = () => {
       console.log("Item removed from cart:", response.data);
   
       if (rankings[mediaId]) {
-        await axios.delete(`http://localhost:8080/api/rankings/${userId}/${mediaId}`);
+        await axios.delete(`${rankings_api}/${userId}/${mediaId}`);
         console.log("Ranking removed successfully!");
       }
   

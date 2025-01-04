@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { users_api, books_api, movies_api, admin_actions_api } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const UserStats = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -9,8 +10,9 @@ const UserStats = () => {
   const [books, setBooks] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("ascending");
+  const navigate = useNavigate();
 
-  const adminId = "4be62897-6e9a-43ab-a488-d366859fa020"; // Replace with dynamic Id
+  const adminId = "4be62897-6e9a-43ab-a488-d366859fa020";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,6 +74,21 @@ const UserStats = () => {
     }
   };
 
+  const handleUpdate = async (id, category) => {
+    try {
+      // Add logic for updating the item (either book or movie)
+      const updatedItem =
+        category === "movies"
+          ? movies.find((movie) => movie.id === id)
+          : books.find((book) => book.id === id);
+
+      console.log("Updated item:", updatedItem);
+      // This is a placeholder action, you can add actual logic for updating the item
+    } catch (error) {
+      console.error("Error updating item:", error);
+    }
+  };
+
   const handleSortChange = async () => {
     if (!sortColumn || !selectedCategory) return;
 
@@ -114,7 +131,7 @@ const UserStats = () => {
               id="sortColumnDropdown"
               value={sortColumn || ""}
               onChange={(e) => setSortColumn(e.target.value)}
-              className="border p-2 rounded"
+              className="select select-bordered select-sm"
             >
               <option value="" disabled>
                 Select column
@@ -134,7 +151,7 @@ const UserStats = () => {
               id="sortDirectionDropdown"
               value={sortDirection}
               onChange={(e) => setSortDirection(e.target.value)}
-              className="border p-2 rounded"
+              className="select select-bordered select-sm"
             >
               <option value="ascending">Ascending</option>
               <option value="descending">Descending</option>
@@ -150,92 +167,110 @@ const UserStats = () => {
   const renderTable = () => {
     if (selectedCategory === "users") {
       return (
-        <table className="min-w-full mt-4 border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border">Name</th>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td className="px-4 py-2 border">{user.name}</td>
-                <td className="px-4 py-2 border">{user.email}</td>
-                <td className="px-4 py-2 border">{user.role}</td>
+        <div className="overflow-x-auto shadow-lg rounded-lg mt-4">
+          <table className="table w-full table-zebra">
+            <thead>
+              <tr>
+                <th className="text-left">Name</th>
+                <th>Email</th>
+                <th>Role</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td className="font-semibold">{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       );
     }
 
     if (selectedCategory === "movies") {
       return (
-        <table className="min-w-full mt-4 border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border">Title</th>
-              <th className="px-4 py-2 border">Director</th>
-              <th className="px-4 py-2 border">Year</th>
-              <th className="px-4 py-2 border">Genre</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {movies.map((movie) => (
-              <tr key={movie.id}>
-                <td className="px-4 py-2 border">{movie.title}</td>
-                <td className="px-4 py-2 border">{movie.director}</td>
-                <td className="px-4 py-2 border">{movie.releaseyear}</td>
-                <td className="px-4 py-2 border">{movie.genre}</td>
-                <td className="px-4 py-2 border">
-                  <button
-                    onClick={() => handleDelete(movie.id, "movies")}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto shadow-lg rounded-lg mt-4">
+          <table className="table w-full table-zebra">
+            <thead>
+              <tr>
+                <th className="text-left">Title</th>
+                <th>Director</th>
+                <th>Year</th>
+                <th>Genre</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {movies.map((movie) => (
+                <tr key={movie.id}>
+                  <td className="font-semibold">{movie.title}</td>
+                  <td>{movie.director}</td>
+                  <td>{movie.releaseyear}</td>
+                  <td>{movie.genre}</td>
+                  <td>
+                    <button
+                      onClick={() => handleDelete(movie.id, "movies")}
+                      className="btn btn-error btn-sm mr-2"
+                    >
+                      Remove
+                    </button>
+                    <button
+                      onClick={() => navigate(`/admin-dashboard/update-movie/${movie.id}`)}
+                      className="btn btn-warning btn-sm"
+                    >
+                      Update
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       );
     }
 
     if (selectedCategory === "books") {
       return (
-        <table className="min-w-full mt-4 border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border">Title</th>
-              <th className="px-4 py-2 border">Author</th>
-              <th className="px-4 py-2 border">Year</th>
-              <th className="px-4 py-2 border">Genre</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {books.map((book) => (
-              <tr key={book.id}>
-                <td className="px-4 py-2 border">{book.title}</td>
-                <td className="px-4 py-2 border">{book.author}</td>
-                <td className="px-4 py-2 border">{book.publishedyear}</td>
-                <td className="px-4 py-2 border">{book.genre}</td>
-                <td className="px-4 py-2 border">
-                  <button
-                    onClick={() => handleDelete(book.id, "books")}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto shadow-lg rounded-lg mt-4">
+          <table className="table w-full table-zebra">
+            <thead>
+              <tr>
+                <th className="text-left">Title</th>
+                <th>Author</th>
+                <th>Year</th>
+                <th>Genre</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {books.map((book) => (
+                <tr key={book.id}>
+                  <td className="font-semibold">{book.title}</td>
+                  <td>{book.author}</td>
+                  <td>{book.publishedyear}</td>
+                  <td>{book.genre}</td>
+                  <td>
+                    <button
+                      onClick={() => handleDelete(book.id, "books")}
+                      className="btn btn-error btn-sm mr-2"
+                    >
+                      Remove
+                    </button>
+                    <button
+                      onClick={() => navigate(`/admin-dashboard/update-book/${book.id}`)}
+                      className="btn btn-warning btn-sm"
+                    >
+                      Update
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       );
     }
 
@@ -243,7 +278,7 @@ const UserStats = () => {
   };
 
   return (
-    <div>
+    <div className="container mx-auto mt-8">
       <div className="grid grid-cols-3 gap-6 mt-4">
         <div
           className="p-6 bg-blue-100 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-blue-500"
