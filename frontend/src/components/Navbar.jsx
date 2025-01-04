@@ -13,8 +13,8 @@ const Navbar = () => {
   return (
     <nav className="bg-base-100 shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4">
-        <h1 className="text-3xl font-bold text-primary">
-          <span className="text-accent">Libra</span>Flick
+        <h1 className="text-3xl font-bold text-primary cursor-pointer" onClick={() => navigate("/")}>
+          <span className="text-accent cursor-pointer">Libra</span>Flick
         </h1>
 
         <div className="flex space-x-4">

@@ -29,4 +29,8 @@ public class BooksService {
     public void deleteById(UUID id){
         this.booksRepository.deleteById(id);
     }
+
+    public void updateById(Books book){
+        this.booksRepository.updateById(book);
+    }
 }

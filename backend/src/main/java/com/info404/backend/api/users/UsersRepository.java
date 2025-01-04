@@ -5,9 +5,11 @@ import java.util.UUID;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.info404.backend.api.ApiRequest;
+
 @Mapper
 interface UsersRepository {
-    List<Users> selectAll();
+    List<Users> selectAll(ApiRequest apiRequest);
     Users selectById(UUID id);
     void insert(Users user);
     void deleteById(UUID id);

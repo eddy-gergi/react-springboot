@@ -32,4 +32,9 @@
         #{description}, #{url}) </insert>
     <delete id="deleteById"> DELETE FROM movies WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
+    <update id="updateById" parameterType="com.info404.backend.api.movies.Movies"> UPDATE movies SET
+        title = #{title}, director = #{director}, genre = #{genre}, releaseyear = #{releaseyear},
+        description = #{description}, url = #{url} WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </update>
+
 </mapper>

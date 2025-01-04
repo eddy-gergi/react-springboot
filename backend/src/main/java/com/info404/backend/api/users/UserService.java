@@ -6,13 +6,15 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.info404.backend.api.ApiRequest;
+
 @Service
 public class UserService {
     @Autowired
     private UsersRepository usersRepository;
 
-    List<Users> selectAll() {
-        return this.usersRepository.selectAll();
+    List<Users> selectAll(ApiRequest apiRequest) {
+        return this.usersRepository.selectAll(apiRequest);
     }
 
     public Users selectById(UUID id) {

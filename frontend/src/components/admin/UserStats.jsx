@@ -76,92 +76,53 @@ const UserStats = () => {
 
   const handleUpdate = async (id, category) => {
     try {
-      // Add logic for updating the item (either book or movie)
       const updatedItem =
         category === "movies"
           ? movies.find((movie) => movie.id === id)
           : books.find((book) => book.id === id);
 
       console.log("Updated item:", updatedItem);
-      // This is a placeholder action, you can add actual logic for updating the item
     } catch (error) {
       console.error("Error updating item:", error);
     }
   };
 
-  const handleSortChange = async () => {
-    if (!sortColumn || !selectedCategory) return;
+  const handleSortChange = (column) => {
+    if (!selectedCategory) return;
 
-    try {
-      const apiUrl =
-        selectedCategory === "movies"
-          ? `${movies_api}/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`
-          : `${books_api}/all?orderByColumn=${sortColumn}&orderByDirection=${sortDirection}`;
+    const newSortDirection =
+      sortColumn === column && sortDirection === "ascending"
+        ? "descending"
+        : "ascending";
 
-      const response = await axios.get(apiUrl);
+    setSortColumn(column);
+    setSortDirection(newSortDirection);
 
+    const apiUrl =
+      selectedCategory === "users"
+        ? `${users_api}/all?orderByColumn=${column}&orderByDirection=${newSortDirection}`
+        : selectedCategory === "movies"
+        ? `${movies_api}/all?orderByColumn=${column}&orderByDirection=${newSortDirection}`
+        : `${books_api}/all?orderByColumn=${column}&orderByDirection=${newSortDirection}`;
+
+    axios.get(apiUrl).then((response) => {
       if (selectedCategory === "movies") {
         setMovies(response.data);
       } else if (selectedCategory === "books") {
         setBooks(response.data);
+      } else if (selectedCategory === "users") {
+        setUsers(response.data);
       }
-    } catch (error) {
+    }).catch((error) => {
       console.error("Error sorting data:", error);
-    }
+    });
   };
 
-  useEffect(() => {
-    handleSortChange();
-  }, [sortColumn, sortDirection]);
-
-  const renderSortDropdown = () => {
-    if (selectedCategory === "movies" || selectedCategory === "books") {
-      const columns =
-        selectedCategory === "movies"
-          ? ["title", "director", "releaseyear", "genre"]
-          : ["title", "author", "publishedyear", "genre"];
-
-      return (
-        <div className="mt-4 flex items-center gap-4">
-          <div>
-            <label htmlFor="sortColumnDropdown" className="mr-2">
-              Sort by:
-            </label>
-            <select
-              id="sortColumnDropdown"
-              value={sortColumn || ""}
-              onChange={(e) => setSortColumn(e.target.value)}
-              className="select select-bordered select-sm"
-            >
-              <option value="" disabled>
-                Select column
-              </option>
-              {columns.map((column) => (
-                <option key={column} value={column}>
-                  {column.charAt(0).toUpperCase() + column.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="sortDirectionDropdown" className="mr-2">
-              Direction:
-            </label>
-            <select
-              id="sortDirectionDropdown"
-              value={sortDirection}
-              onChange={(e) => setSortDirection(e.target.value)}
-              className="select select-bordered select-sm"
-            >
-              <option value="ascending">Ascending</option>
-              <option value="descending">Descending</option>
-            </select>
-          </div>
-        </div>
-      );
+  const renderSortArrow = (column) => {
+    if (sortColumn === column) {
+      return sortDirection === "ascending" ? "↑" : "↓";
     }
-
-    return null;
+    return "";
   };
 
   const renderTable = () => {
@@ -171,9 +132,24 @@ const UserStats = () => {
           <table className="table w-full table-zebra">
             <thead>
               <tr>
-                <th className="text-left">Name</th>
-                <th>Email</th>
-                <th>Role</th>
+                <th
+                  className="text-left cursor-pointer"
+                  onClick={() => handleSortChange("name")}
+                >
+                  Name {renderSortArrow("name")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("email")}
+                >
+                  Email {renderSortArrow("email")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("role")}
+                >
+                  Role {renderSortArrow("role")}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -196,10 +172,30 @@ const UserStats = () => {
           <table className="table w-full table-zebra">
             <thead>
               <tr>
-                <th className="text-left">Title</th>
-                <th>Director</th>
-                <th>Year</th>
-                <th>Genre</th>
+                <th
+                  className="text-left cursor-pointer"
+                  onClick={() => handleSortChange("title")}
+                >
+                  Title {renderSortArrow("title")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("director")}
+                >
+                  Director {renderSortArrow("director")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("releaseyear")}
+                >
+                  Year {renderSortArrow("releaseyear")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("genre")}
+                >
+                  Genre {renderSortArrow("genre")}
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -238,10 +234,30 @@ const UserStats = () => {
           <table className="table w-full table-zebra">
             <thead>
               <tr>
-                <th className="text-left">Title</th>
-                <th>Author</th>
-                <th>Year</th>
-                <th>Genre</th>
+                <th
+                  className="text-left cursor-pointer"
+                  onClick={() => handleSortChange("title")}
+                >
+                  Title {renderSortArrow("title")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("author")}
+                >
+                  Author {renderSortArrow("author")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("publishedyear")}
+                >
+                  Year {renderSortArrow("publishedyear")}
+                </th>
+                <th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange("genre")}
+                >
+                  Genre {renderSortArrow("genre")}
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -281,7 +297,7 @@ const UserStats = () => {
     <div className="container mx-auto mt-8">
       <div className="grid grid-cols-3 gap-6 mt-4">
         <div
-          className="p-6 bg-blue-100 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-blue-500"
+          className="p-6 bg-slate-700 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-gray-500"
           onClick={() => handleCategoryClick("users")}
         >
           <h2 className="text-2xl font-bold">{users.length}</h2>
@@ -289,7 +305,7 @@ const UserStats = () => {
         </div>
 
         <div
-          className="p-6 bg-green-100 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-green-500"
+          className="p-6 bg-gray-700 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-gray-500"
           onClick={() => handleCategoryClick("movies")}
         >
           <h2 className="text-2xl font-bold">{movies.length}</h2>
@@ -297,7 +313,7 @@ const UserStats = () => {
         </div>
 
         <div
-          className="p-6 bg-yellow-100 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-yellow-500"
+          className="p-6 bg-gray-700 rounded-lg shadow-lg text-center cursor-pointer hover:shadow-xl hover:ring-2 hover:ring-gray-500"
           onClick={() => handleCategoryClick("books")}
         >
           <h2 className="text-2xl font-bold">{books.length}</h2>
@@ -305,7 +321,6 @@ const UserStats = () => {
         </div>
       </div>
 
-      {renderSortDropdown()}
       {renderTable()}
     </div>
   );

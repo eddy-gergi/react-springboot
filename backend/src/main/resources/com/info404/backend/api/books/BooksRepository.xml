@@ -33,4 +33,8 @@
 
     <delete id="deleteById"> DELETE FROM books WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} </delete>
+    <update id="updateById" parameterType="Books"> UPDATE books SET title = #{title}, author =
+        #{author}, genre = #{genre}, publishedyear = #{publishedyear}, description = #{description},
+        url = #{url} WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} </update>
 </mapper>

@@ -2,30 +2,30 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import CustomFormField from "../CustomFormField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { bookFormValidation } from "../../lib/validation"; 
+import { bookFormValidation } from "../../lib/validation";
 import axios from "axios";
 import SubmitButton from "../SubmitButton";
 import { books_api, admin_actions_api } from "../../services/api";
-import { useParams } from "react-router-dom";  // For accessing URL parameters
+import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateBookForm = () => {
-  const { id } = useParams();  // Get the book id from the URL
+  const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [bookData, setBookData] = useState(null);
+  const navigate = useNavigate();
 
   const form = useForm({
-    resolver: zodResolver(bookFormValidation),  // Use book validation schema
+    resolver: zodResolver(bookFormValidation),
     defaultValues: {
       title: "",
       author: "",
       genre: "",
-      releaseyear: "",
+      publishedyear: "",
       description: "",
       imgUrl: "",
     },
   });
 
-  // Fetch book data based on the id from the URL
   useEffect(() => {
     const fetchBookData = async () => {
       setIsLoading(true);
@@ -33,7 +33,6 @@ const UpdateBookForm = () => {
         const response = await axios.get(`${books_api}/${id}`);
         setBookData(response.data);
       } catch (error) {
-        console.error("Failed to fetch book data:", error);
         alert("Failed to load book data. Please try again.");
       } finally {
         setIsLoading(false);
@@ -45,42 +44,35 @@ const UpdateBookForm = () => {
 
   useEffect(() => {
     if (bookData) {
-      // Populate form with fetched book data once available
       form.reset({
-        title: bookData.title,
-        author: bookData.author,
-        genre: bookData.genre,
-        releaseyear: bookData.releaseyear,
-        description: bookData.description,
-        imgUrl: bookData.url,
+        title: bookData.title || "",
+        author: bookData.author || "",
+        genre: bookData.genre || "",
+        publishedyear: bookData.publishedyear || "",
+        description: bookData.description || "",
+        imgUrl: bookData.url || "",
       });
     }
   }, [bookData, form]);
 
   const handleUpdateBook = async (values) => {
     setIsLoading(true);
-
     try {
       const bookPayload = {
-        id: id,  // Use the id from the URL
+        id,
         title: values.title.trim(),
         author: values.author.trim(),
         genre: values.genre.trim(),
-        releaseyear: parseInt(values.releaseyear, 10),
+        publishedyear: values.publishedyear ? parseInt(values.publishedyear, 10) : 0,
         description: values.description.trim(),
         url: values.imgUrl.trim(),
       };
 
-      console.log("Sending payload:", bookPayload);
-
-      const response = await axios.put(`${books_api}/update/${id}`, bookPayload, {
+      await axios.put(`${books_api}/update/${id}`, bookPayload, {
         headers: { "Content-Type": "application/json" },
       });
 
-      alert("Book updated successfully!");
-      console.log(response.data);
-
-      const adminId = "4be62897-6e9a-43ab-a488-d366859fa020"; // Replace with dynamic Id
+      const adminId = sessionStorage.getItem("adminId");
       const actionInfo = `Updated book: ${values.title}`;
       const actionTimestamp = new Date().toISOString();
 
@@ -90,9 +82,10 @@ const UpdateBookForm = () => {
         actionTimestamp,
       };
 
-      await axios.post(admin_actions_api + "/add", actionPayload);
+      await axios.post(`${admin_actions_api}/add`, actionPayload);
+
+      navigate("/admin-dashboard");
     } catch (error) {
-      console.error("Failed to update book:", error);
       alert("Failed to update book. Please try again.");
     } finally {
       setIsLoading(false);
@@ -137,12 +130,12 @@ const UpdateBookForm = () => {
           errorMessage={form.formState.errors.genre?.message}
         />
         <CustomFormField
-          fieldType="text"
+          fieldType="number"
           control={form.control}
-          name="releaseyear"
-          label="Release Year"
-          placeholder="Enter the release year"
-          errorMessage={form.formState.errors.releaseyear?.message}
+          name="publishedyear"
+          label="Published Year"
+          placeholder="Enter the published year"
+          errorMessage={form.formState.errors.publishedyear?.message}
         />
         <CustomFormField
           fieldType="text"
@@ -160,7 +153,7 @@ const UpdateBookForm = () => {
           placeholder="Enter the image URL"
           errorMessage={form.formState.errors.imgUrl?.message}
         />
-        <SubmitButton isLoading={isLoading}>Update Book</SubmitButton>
+        <button type="submit" className="btn btn-primary mt-4 w-full">Update Book</button>
       </form>
     </div>
   );

@@ -12,4 +12,5 @@ interface MoviesRepository {
     Movies selectById(UUID id);
     void insert(Movies movie);
     void deleteById(UUID id);
+    void updateById(Movies movie); 
 }

@@ -7,6 +7,7 @@ const AllMoviesPage = () => {
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortDirection, setSortDirection] = useState("ascending");
   const moviesPerPage = 6;
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("userId");
@@ -14,7 +15,7 @@ const AllMoviesPage = () => {
   const getAllMovies = async () => {
     try {
       const response = await axios.get(
-        `${movies_api}/all?orderByColumn=title&orderByDirection=ascending`,
+        `${movies_api}/all?orderByColumn=title&orderByDirection=${sortDirection}`,
         { withCredentials: true }
       );
       setMovies(response.data);
@@ -49,14 +50,27 @@ const AllMoviesPage = () => {
     currentPage * moviesPerPage
   );
 
+  const toggleSortDirection = () => {
+    setSortDirection((prev) => (prev === "ascending" ? "descending" : "ascending"));
+  };
+
   useEffect(() => {
     getAllMovies();
-  }, []);
+  }, [sortDirection]);
 
   return (
     <div className="container mx-auto mt-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-4xl font-bold">Movies</h1>
+        <h1 className="text-4xl font-bold flex items-center">
+          Movies
+          <button onClick={toggleSortDirection} className="ml-2">
+            {sortDirection === "ascending" ? (
+              <span className="text-xl">&#8593;</span>
+            ) : (
+              <span className="text-xl">&#8595;</span>
+            )}
+          </button>
+        </h1>
         <div className="flex items-center">
           <button
             className="btn btn-accent mx-2 rounded-full w-8 h-8 flex items-center justify-center text-sm"

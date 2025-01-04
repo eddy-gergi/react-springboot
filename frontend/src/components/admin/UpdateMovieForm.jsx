@@ -6,12 +6,13 @@ import { movieFormValidation } from "../../lib/validation";
 import axios from "axios";
 import SubmitButton from "../SubmitButton";
 import { movies_api, admin_actions_api } from "../../services/api";
-import { useParams } from "react-router-dom"; // For accessing URL parameters
+import { useNavigate, useParams } from "react-router-dom"; 
 
 const UpdateMovieForm = () => {
-  const { id } = useParams(); // Get the movie id from the URL
+  const { id } = useParams(); 
   const [isLoading, setIsLoading] = useState(false);
   const [movieData, setMovieData] = useState(null);
+  const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(movieFormValidation),
@@ -61,7 +62,7 @@ const UpdateMovieForm = () => {
 
     try {
       const moviePayload = {
-        id: id, // Use the id from the URL
+        id: id, 
         title: values.title.trim(),
         director: values.director.trim(),
         genre: values.genre.trim(),
@@ -83,7 +84,7 @@ const UpdateMovieForm = () => {
       alert("Movie updated successfully!");
       console.log(response.data);
 
-      const adminId = "4be62897-6e9a-43ab-a488-d366859fa020"; // Replace with dynamic Id
+      const adminId = sessionStorage.getItem("adminId"); 
       const actionInfo = `Updated movie: ${values.title}`;
       const actionTimestamp = new Date().toISOString();
 
@@ -94,6 +95,7 @@ const UpdateMovieForm = () => {
       };
 
       await axios.post(admin_actions_api + "/add", actionPayload);
+      navigate("/admin-dashboard");
     } catch (error) {
       console.error("Failed to update movie:", error);
       alert("Failed to update movie. Please try again.");

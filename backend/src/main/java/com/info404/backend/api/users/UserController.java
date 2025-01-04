@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.info404.backend.api.ApiRequest;
+import com.info404.backend.api.OrderByDirection;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -25,8 +28,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/all")
-    public List<Users> selectAll() {
-        return this.userService.selectAll();
+    public List<Users> selectAll(
+            @RequestParam(name = "orderByColumn", required = false) UserOrderByColumn userOrderByColumn,
+            @RequestParam(name = "orderByDirection", required = false) OrderByDirection orderByDirection,
+            @RequestParam(name = "limit", required = false) Integer limit,
+            @RequestParam(name = "offset", required = false) Integer offset,
+            @RequestParam(name = "search", required = false) String search) {
+        ApiRequest apiRequest = new ApiRequest();
+        apiRequest.setOrderByColumn(userOrderByColumn);
+        apiRequest.setOrderByDirection(orderByDirection);
+        apiRequest.setLimit(limit);
+        apiRequest.setOffset(offset);
+        apiRequest.setSearch(search);
+        return this.userService.selectAll(apiRequest);
     }
 
     @GetMapping("{id}")

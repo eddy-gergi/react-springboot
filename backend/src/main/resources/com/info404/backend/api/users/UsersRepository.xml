@@ -10,7 +10,17 @@
         <result column="role" property="role" />
     </resultMap>
 
-    <select id="selectAll" resultMap="Users"> SELECT * FROM users </select>
+    <select id="selectAll" resultMap="Users"> SELECT * FROM users <where>
+            <if test="search != null"> (name ILIKE CONCAT('%', #{search}, '%') OR email ILIKE
+        CONCAT('%', #{search}, '%') OR role ILIKE CONCAT('%', #{search}, '%')) </if>
+        </where>
+        <if
+            test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
+        ${orderByDirection} </if>
+        <if test="limit != null"> LIMIT #{limit} </if>
+        <if
+            test="offset != null"> OFFSET #{offset} </if>
+    </select>
 
     <select id="selectById" resultMap="Users"> SELECT * FROM users WHERE id = #{id, javaType=UUID,
         jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>

@@ -13,4 +13,5 @@ interface BooksRepository {
     Books selectById(UUID id);
     void insert(Books book);
     void deleteById(UUID id);
+    void updateById(Books book);
 }

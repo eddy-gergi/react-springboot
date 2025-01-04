@@ -17,15 +17,19 @@ public class MovieService {
         return this.movieRepository.selectAll(apiRequest);
     }
 
-    public Movies selectById(UUID id){
+    public Movies selectById(UUID id) {
         return this.movieRepository.selectById(id);
     }
 
-    public void insert(Movies movie){
+    public void insert(Movies movie) {
         this.movieRepository.insert(movie);
     }
 
-    public void deleteById(UUID id){
+    public void deleteById(UUID id) {
         this.movieRepository.deleteById(id);
+    }
+
+    public void updateById(Movies movie) { 
+        this.movieRepository.updateById(movie);
     }
 }
