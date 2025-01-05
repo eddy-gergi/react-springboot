@@ -29,13 +29,18 @@ public class UserService {
         this.usersRepository.deleteById(id);
     }
 
-    public Users updateById(UUID id) {
-        return this.usersRepository.UpdateById(id);
+    public Users updateById(UUID id, Users user) {
+        int rowsAffected = usersRepository.updateById(id, user);
+        if (rowsAffected > 0) {
+            return user;
+        } else {
+            throw new RuntimeException("User update failed");
+        }
     }
+    
 
     public Users login(String email, String password) {
         return this.usersRepository.login(email, password);
     }
-    
 
 }

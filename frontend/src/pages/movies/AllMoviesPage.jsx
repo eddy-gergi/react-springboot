@@ -31,7 +31,7 @@ const AllMoviesPage = () => {
         mediaId: id,
         mediaType: "movie",
       };
-      const response = await axios.post(`${carts_api}/${userId}/add`, payload, {
+      await axios.post(`${carts_api}/${userId}/add`, payload, {
         withCredentials: true,
       });
       alert("Movie has been added to your cart!");
@@ -94,12 +94,32 @@ const AllMoviesPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {displayedMovies.map((movie) => (
           <div key={movie.id} className="card bg-base-100 shadow-lg rounded-lg p-6">
-            <h2 className="text-2xl font-bold">{movie.title}</h2>
-            <p className="mt-2 text-gray-600">{movie.description}</p>
-            <button className="btn btn-secondary mt-4" onClick={() => navigate(`/movie/${movie.id}`)}>
+            <h2
+              className="text-2xl font-bold truncate"
+              style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}
+            >
+              {movie.title}
+            </h2>
+            <p
+              className="mt-2 text-gray-600 line-clamp-2 overflow-hidden text-ellipsis"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
+              {movie.description}
+            </p>
+            <button
+              className="btn btn-secondary mt-4"
+              onClick={() => navigate(`/movie/${movie.id}`)}
+            >
               View
             </button>
-            <button className="btn btn-primary mt-4" onClick={() => addToCart(movie.id)}>
+            <button
+              className="btn btn-primary mt-4"
+              onClick={() => addToCart(movie.id)}
+            >
               Add to Cart
             </button>
           </div>

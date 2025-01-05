@@ -21,6 +21,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import NotAllowedPage from "./pages/NotAllowedPage";
 import UpdateMovieForm from "./components/admin/UpdateMovieForm";
 import UpdateBookForm from "./components/admin/UpdateBookForm";
+import ProfilePage from "./pages/auth/ProfilePage";
 
 const AppContent = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ const AppContent = () => {
           <Route path="/admin-dashboard/update-movie/:id" element={<UpdateMovieForm />} />
           <Route path="/admin-dashboard/update-book/:id" element={<UpdateBookForm />} />
           <Route path="/search" element={<SearchPage/>} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/not-allowed" element={<NotAllowedPage />}/>
         </Routes>

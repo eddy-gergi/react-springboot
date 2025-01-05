@@ -54,8 +54,8 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public Users updateById(@PathVariable("id") UUID id) {
-        return this.userService.updateById(id);
+    public Users updateById(@PathVariable("id") UUID id, @RequestBody Users updatedUser) {
+        return this.userService.updateById(id, updatedUser);
     }
 
     @DeleteMapping("{id}")

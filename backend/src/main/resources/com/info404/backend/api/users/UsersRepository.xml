@@ -34,8 +34,10 @@
         VALUES (#{name}, #{email}, #{password}, #{role}) </insert>
 
 
-    <update id="updateById" parameterType="Users"> UPDATE users SET name = #{name}, email =
-        #{email}, password = #{password} WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
+    <update id="updateById" parameterType="com.info404.backend.api.users.Users"> UPDATE users SET
+        name = #{user.name}, email = #{user.email}, <if test="user.password != null"> password =
+        #{user.password} </if> WHERE id = #{id, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} </update>
+
 
 </mapper>

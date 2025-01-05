@@ -65,9 +65,9 @@ const AllBooksPage = () => {
           Books
           <button onClick={toggleSortDirection} className="ml-2">
             {sortDirection === "ascending" ? (
-              <span className="text-xl">&#8593;</span> 
+              <span className="text-xl">&#8593;</span>
             ) : (
-              <span className="text-xl">&#8595;</span> 
+              <span className="text-xl">&#8595;</span>
             )}
           </button>
         </h1>
@@ -95,7 +95,9 @@ const AllBooksPage = () => {
         {displayedBooks.map((book) => (
           <div key={book.id} className="card bg-base-100 shadow-lg rounded-lg p-6">
             <h2 className="text-2xl font-bold">{book.title}</h2>
-            <p className="mt-2 text-gray-600">{book.description}</p>
+            <p className="mt-2 text-gray-600 line-clamp-2 overflow-hidden text-ellipsis" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+              {book.description}
+            </p>
             <button className="btn btn-secondary mt-4" onClick={() => navigate(`/book/${book.id}`)}>
               View
             </button>

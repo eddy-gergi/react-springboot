@@ -13,7 +13,7 @@ interface UsersRepository {
     Users selectById(UUID id);
     void insert(Users user);
     void deleteById(UUID id);
-    Users UpdateById(UUID id);
+    int updateById(UUID id, Users user);
     Users login(String email, String password);
   
 }
