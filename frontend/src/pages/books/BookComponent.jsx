@@ -8,6 +8,7 @@ const BookComponent = () => {
   const [media, setMedia] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [averageRating, setAverageRating] = useState(null);
+  const [userRanking, setUserRanking] = useState(0);
   const userId = sessionStorage.getItem("userId");
 
   const findMedia = async () => {
@@ -32,6 +33,53 @@ const BookComponent = () => {
     }
   };
 
+  const findUserRanking = async () => {
+    try {
+      const response = await axios.get(`${rankings_api}/${userId}/${id}`);
+      setUserRanking(response.data?.ranking || 0);
+    } catch (error) {
+      console.error("Failed to fetch user ranking:", error.message);
+      setUserRanking(0);
+    }
+  };
+
+  const handleRankingChange = async (ranking) => {
+    if (!userId) {
+      alert("Please log in to rank this book.");
+      return;
+    }
+
+    if (ranking === null || ranking === undefined || isNaN(ranking)) {
+      alert("Invalid ranking value.");
+      return;
+    }
+
+    try {
+      if (userRanking === 0) {
+        await axios.post(`${rankings_api}/${userId}/addRanking`, {
+          mediaId: id,
+          mediaType: "book",
+          ranking,
+        });
+        alert("Ranking added successfully!");
+      } else {
+        await axios.put(`${rankings_api}/${userId}`, {
+          userId,
+          mediaId: id,
+          mediaType: "book",
+          ranking,
+        });
+        alert("Ranking updated successfully!");
+      }
+
+      setUserRanking(ranking);
+      findAverageRating();
+    } catch (error) {
+      console.error(`Error ${userRanking === 0 ? "adding" : "updating"} ranking:`, error);
+      alert(`Failed to ${userRanking === 0 ? "add" : "update"} ranking. Please try again.`);
+    }
+  };
+
   const handleAddToCart = async () => {
     try {
       setIsLoading(true);
@@ -51,12 +99,12 @@ const BookComponent = () => {
   useEffect(() => {
     findMedia();
     findAverageRating();
+    findUserRanking();
   }, [id]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center">
       <div className="max-w-5xl bg-base-100 rounded-lg shadow-xl overflow-hidden flex flex-col md:flex-row">
-        {/* Image Section */}
         <div className="md:w-1/2 w-full flex items-center justify-center bg-gray-50">
           <img
             src={media.url}
@@ -65,21 +113,32 @@ const BookComponent = () => {
             style={{ maxHeight: "500px" }}
           />
         </div>
-
-        {/* Book Details Section */}
         <div className="p-6 flex flex-col justify-between md:w-1/2 w-full">
           <h1 className="text-3xl font-bold mb-2">{media.title || "Loading..."}</h1>
-          <h2 className="text-gray-500 mb-4">
-            {media.author}, {media.publishedyear}
-          </h2>
+          <h2 className="text-gray-500 mb-4">{media.author}, {media.publishedyear}</h2>
           <h2 className="text-gray-500 mb-4">Genre: {media.genre}</h2>
           <p className="text-gray-600 mb-4">{media.description}</p>
           <p className="text-lg font-semibold text-gray-700 mb-4">
             Average Rating: ⭐ {averageRating || 0}
           </p>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Your Rating:</label>
+            <select
+              value={userRanking > 0 ? userRanking : 0}
+              onChange={(e) => handleRankingChange(parseInt(e.target.value))}
+              className="select select-bordered"
+            >
+              <option value={0}>{userRanking > 0 ? "⭐".repeat(userRanking) : "Select"}</option>
+              <option value={1}>⭐</option>
+              <option value={2}>⭐⭐</option>
+              <option value={3}>⭐⭐⭐</option>
+              <option value={4}>⭐⭐⭐⭐</option>
+              <option value={5}>⭐⭐⭐⭐⭐</option>
+            </select>
+          </div>
           <button
             onClick={handleAddToCart}
-            className={`btn btn-accent mt-4 w-1/2 self-start ${isLoading ? "btn-disabled loading" : ""}`}
+            className={`btn btn-accent w-full ${isLoading ? "btn-disabled loading" : ""}`}
             disabled={isLoading}
           >
             🛒 {isLoading ? "Adding to Cart..." : "Add to Cart"}

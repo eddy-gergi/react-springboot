@@ -7,7 +7,12 @@ const RankingPage = () => {
   const [rankings, setRankings] = useState([]);
   const [mediaDetails, setMediaDetails] = useState({});
   const [averageRatings, setAverageRatings] = useState({});
+  const [sortOrder, setSortOrder] = useState("descending");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRankings, setTotalRankings] = useState(0);
   const userId = sessionStorage.getItem("userId");
+
+  const itemsPerPage = 6;
 
   if (!userId) {
     return (
@@ -21,8 +26,13 @@ const RankingPage = () => {
 
   const getRankings = async () => {
     try {
-      const response = await axios.get(`${rankings_api}/all/${userId}`);
-      setRankings(response.data);
+      const response = await axios.get(
+        `${rankings_api}/all/${userId}?orderByColumn=ranking&orderByDirection=${sortOrder}`
+      );
+      if (response.data) {
+        setRankings(response.data || []);
+        setTotalRankings(response.data.length || 0);
+      }
     } catch (error) {
       console.error("Error fetching rankings:", error);
     }
@@ -58,11 +68,19 @@ const RankingPage = () => {
     }
   };
 
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "descending" ? "ascending" : "descending"));
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   useEffect(() => {
     if (userId) {
       getRankings();
     }
-  }, [userId]);
+  }, [userId, sortOrder]);
 
   useEffect(() => {
     if (rankings.length > 0) {
@@ -73,23 +91,66 @@ const RankingPage = () => {
     }
   }, [rankings]);
 
+  
+  const currentRankings = rankings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className="container mx-auto mt-8">
-      <h1 className="text-4xl font-bold mb-4 text-center">Rankings</h1>
-      {rankings.map((item) => (
-        <div key={item.id} className="card bg-base-100 shadow-lg rounded-lg p-6 mb-4">
-          <h2 className="text-2xl font-bold">
-            {mediaDetails[item.mediaId]?.title || "Loading..."}
-          </h2>
-          <p>Your Rating: ⭐ {item.ranking}</p>
-          <p>
-            Average Rating: ⭐{" "}
-            {averageRatings[item.mediaId]
-              ? averageRatings[item.mediaId].toFixed(1)
-              : "Loading..."}
-          </p>
-        </div>
-      ))}
+      <h1 className="text-4xl font-bold mb-4 text-center flex justify-between items-center">
+        Rankings
+        <button onClick={toggleSortOrder} className="text-xl">
+          {sortOrder === "descending" ? "↓" : "↑"}
+        </button>
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {currentRankings.length > 0 ? (
+          currentRankings.map((item) => (
+            <div
+              key={item.id}
+              className="card bg-base-100 shadow-lg rounded-lg p-6 flex flex-col items-center"
+            >
+              <h2 className="text-2xl font-bold mb-2">
+                {mediaDetails[item.mediaId]?.title || "Loading..."}
+              </h2>
+              <div className="flex items-center space-x-2 mb-2">
+                <p className="text-lg">Your Rating:</p>
+                <div className="text-yellow-500">{'⭐'.repeat(item.ranking)}</div>
+              </div>
+              <p className="text-lg mb-2">
+                Average Rating: ⭐{" "}
+                {averageRatings[item.mediaId]
+                  ? averageRatings[item.mediaId].toFixed(1)
+                  : "Loading..."}
+              </p>
+              <p className="text-sm text-gray-500">Media Type: {item.mediaType}</p>
+            </div>
+          ))
+        ) : (
+          <p>No rankings available</p>
+        )}
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="btn btn-outline"
+        >
+          {"<"}
+        </button>
+        <p className="text-lg">
+          Page {currentPage} of {Math.ceil(totalRankings / itemsPerPage)}
+        </p>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage * itemsPerPage >= totalRankings}
+          className="btn btn-outline"
+        >
+          {">"}
+        </button>
+      </div>
     </div>
   );
 };

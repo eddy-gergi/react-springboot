@@ -3,7 +3,8 @@ package com.info404.backend.api.rankings;
 import com.info404.backend.api.OrderByColumn;
 
 public enum RankingOrderByColumn implements OrderByColumn{
-        ranking("ranking");
+        ranking("ranking"),
+        mediaType("mediaType");
     
         private final String rankingOrderByColumn;
     

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RankingsRepository {
     List<Rankings> selectByUserId(UUID userId, String orderByColumn, String orderByDirection);
+    Rankings selectByUserIdAndMediaId(UUID userId, UUID mediaId);
 
     void insertRankingEntry(Rankings ranking);
 

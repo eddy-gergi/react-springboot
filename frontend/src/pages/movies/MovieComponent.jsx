@@ -5,9 +5,10 @@ import { carts_api, rankings_api } from "../../services/api";
 
 const MovieComponent = () => {
   const { id } = useParams();
-  const [media, setMedia] = useState([]);
+  const [media, setMedia] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [averageRating, setAverageRating] = useState(null);
+  const [userRanking, setUserRanking] = useState(0);
   const userId = sessionStorage.getItem("userId");
 
   const findMedia = async () => {
@@ -32,6 +33,53 @@ const MovieComponent = () => {
     }
   };
 
+  const findUserRanking = async () => {
+    try {
+      const response = await axios.get(`${rankings_api}/${userId}/${id}`);
+      setUserRanking(response.data?.ranking || 0);
+    } catch (error) {
+      console.error("Failed to fetch user ranking:", error.message);
+      setUserRanking(0);
+    }
+  };
+
+  const handleRankingChange = async (ranking) => {
+    if (!userId) {
+      alert("Please log in to rank this movie.");
+      return;
+    }
+
+    if (ranking === null || ranking === undefined || isNaN(ranking)) {
+      alert("Invalid ranking value.");
+      return;
+    }
+
+    try {
+      if (userRanking === 0) {
+        await axios.post(`${rankings_api}/${userId}/addRanking`, {
+          mediaId: id,
+          mediaType: "movie",
+          ranking,
+        });
+        alert("Ranking added successfully!");
+      } else {
+        await axios.put(`${rankings_api}/${userId}`, {
+          userId,
+          mediaId: id,
+          mediaType: "movie",
+          ranking,
+        });
+        alert("Ranking updated successfully!");
+      }
+
+      setUserRanking(ranking);
+      findAverageRating();
+    } catch (error) {
+      console.error(`Error ${userRanking === 0 ? "adding" : "updating"} ranking:`, error);
+      alert(`Failed to ${userRanking === 0 ? "add" : "update"} ranking. Please try again.`);
+    }
+  };
+
   const handleAddToCart = async () => {
     try {
       setIsLoading(true);
@@ -51,12 +99,12 @@ const MovieComponent = () => {
   useEffect(() => {
     findMedia();
     findAverageRating();
+    findUserRanking();
   }, [id]);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center">
       <div className="max-w-4xl bg-base-100 rounded-lg shadow-xl overflow-hidden flex flex-col md:flex-row">
-        {/* Image */}
         <div className="h-full w-full md:w-1/2 overflow-hidden">
           <img
             src={media.url}
@@ -65,7 +113,6 @@ const MovieComponent = () => {
           />
         </div>
 
-        {/* Movie Details */}
         <div className="p-6 flex flex-col justify-between">
           <h1 className="text-3xl font-bold mb-2">{media.title}</h1>
           <h2 className="text-gray-500 mb-4">
@@ -78,9 +125,24 @@ const MovieComponent = () => {
           <p className="text-lg font-semibold text-gray-700 mb-4">
             Average Rating: ⭐ {averageRating || 0}
           </p>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Your Rating:</label>
+            <select
+              value={userRanking > 0 ? userRanking : 0}
+              onChange={(e) => handleRankingChange(parseInt(e.target.value))}
+              className="select select-bordered"
+            >
+              <option value={0}>{userRanking > 0 ? "⭐".repeat(userRanking) : "Select"}</option>
+              <option value={1}>⭐</option>
+              <option value={2}>⭐⭐</option>
+              <option value={3}>⭐⭐⭐</option>
+              <option value={4}>⭐⭐⭐⭐</option>
+              <option value={5}>⭐⭐⭐⭐⭐</option>
+            </select>
+          </div>
           <button
             onClick={handleAddToCart}
-            className={`btn btn-accent mt-4 w-1/2 self-start ${isLoading ? "btn-disabled loading" : ""}`}
+            className={`btn btn-accent w-full ${isLoading ? "btn-disabled loading" : ""}`}
             disabled={isLoading}
           >
             🛒 {isLoading ? "Adding to Cart..." : "Add to Cart"}

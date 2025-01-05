@@ -15,14 +15,18 @@
         #{userId, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} <if
             test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
-        ${orderByDirection} 
-        </if>
+        ${orderByDirection} </if>
     </select>
 
 
     <select id="selectByMediaId" resultMap="Rankings"> SELECT * FROM rankings WHERE mediaId =
         #{mediaId, javaType=UUID, jdbcType=OTHER,
         typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
+
+    <select id="selectByUserIdAndMediaId" resultMap="Rankings"> SELECT * FROM rankings WHERE userId
+        = #{userId, javaType=UUID, jdbcType=OTHER,
+        typeHandler=com.info404.backend.handlers.UuidTypeHandler} AND mediaId = #{mediaId,
+        javaType=UUID, jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} </select>
 
     <delete id="removeRankingEntry"> DELETE FROM rankings WHERE userId = #{userId, javaType=UUID,
         jdbcType=OTHER, typeHandler=com.info404.backend.handlers.UuidTypeHandler} AND mediaId =

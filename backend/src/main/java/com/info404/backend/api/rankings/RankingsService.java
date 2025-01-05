@@ -42,4 +42,8 @@ public class RankingsService {
     public List<Rankings> getRankingByMediaId(UUID mediaId) {
         return this.rankingsRepository.selectByMediaId(mediaId);
     }
+
+    public Rankings getRankingByUserIdAndMediaId(UUID userId, UUID mediaId) {
+        return this.rankingsRepository.selectByUserIdAndMediaId(userId, mediaId);
+    }
 }

@@ -91,4 +91,11 @@ public class RankingsController {
         return this.rankingsService.getRankingByMediaId(mediaId);
     }
 
+    @GetMapping("{userId}/{mediaId}")
+    public Rankings getRankingByUserIdAndMediaId(
+            @PathVariable("userId") UUID userId,
+            @PathVariable("mediaId") UUID mediaId) {
+        return this.rankingsService.getRankingByUserIdAndMediaId(userId, mediaId);
+    }
+
 }
