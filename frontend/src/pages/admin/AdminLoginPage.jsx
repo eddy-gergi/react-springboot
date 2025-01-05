@@ -23,7 +23,6 @@ const AdminLoginPage = () => {
 
       if (response.status === 200 && response.data && response.data.role === "admin") { 
         sessionStorage.setItem("adminId", response.data.id); 
-        console.log("ID: ", response.data.id);
         navigate("/admin-dashboard"); 
       } else {
         setError("Login failed. Please check your credentials.");

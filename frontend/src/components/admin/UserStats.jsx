@@ -12,8 +12,7 @@ const UserStats = () => {
   const [sortDirection, setSortDirection] = useState("ascending");
   const navigate = useNavigate();
 
-  const adminId = "4be62897-6e9a-43ab-a488-d366859fa020";
-
+  const adminId = sessionStorage.getItem("adminId");
   useEffect(() => {
     const fetchData = async () => {
       try {

@@ -33,7 +33,6 @@ const LoginPage = () => {
 
       if (response.status === 200 && response.data) {
         sessionStorage.setItem("userId", response.data.id);
-        console.log("ID: ", response.data.id);
         navigate("/");
       } else {
         alert("Login failed. Please check your credentials.");
