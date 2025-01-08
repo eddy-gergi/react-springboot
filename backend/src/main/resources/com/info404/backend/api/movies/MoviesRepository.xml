@@ -17,12 +17,10 @@
         CONCAT('%', #{search}, '%') OR genre ILIKE CONCAT('%', #{search}, '%') OR CAST(releaseyear
         AS TEXT) ILIKE CONCAT('%', #{search}, '%')) </if>
         </where>
-    <if
-            test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
+    <if test="orderByColumn != null and orderByDirection != null"> ORDER BY ${orderByColumn}
         ${orderByDirection} </if>
     <if test="limit != null"> LIMIT #{limit} </if>
-    <if
-            test="offset != null"> OFFSET #{offset} </if>
+    <if test="offset != null"> OFFSET #{offset} </if>
     </select>
 
     <select id="selectById" resultMap="Movies"> SELECT * FROM movies WHERE id = #{id, javaType=UUID,

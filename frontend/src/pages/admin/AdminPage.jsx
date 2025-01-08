@@ -27,7 +27,7 @@ const AdminPage = () => {
 
   const renderContent = () => {
     switch (selectedOption) {
-      case "UserStats":
+      case "LibraryStats":
         return <UserStats />;
       case "AddMovie":
         return <AddMovieForm />;
@@ -48,7 +48,7 @@ const AdminPage = () => {
         <h2 className="text-2xl font-bold mb-4">Admin Menu</h2>
         <nav>
           {[  
-            { name: "User Stats", key: "UserStats" },
+            { name: "Library Stats", key: "LibraryStats" },
             { name: "Add Movie", key: "AddMovie" },
             { name: "Add Book", key: "AddBook" },
             { name: "Add Admin", key: "AddAdmin" },
