@@ -70,7 +70,7 @@ public class RankingsController {
         String mediaType = (String) requestBody.get("mediaType");
         Integer ranking = (Integer) requestBody.get("ranking");
 
-        System.out.println("Ranking received: " + ranking); // Log the ranking value received
+        System.out.println("Ranking received: " + ranking); 
 
         if (!mediaType.equals("book") && !mediaType.equals("movie")) {
             throw new IllegalArgumentException("Invalid mediaType: must be 'book' or 'movie'");

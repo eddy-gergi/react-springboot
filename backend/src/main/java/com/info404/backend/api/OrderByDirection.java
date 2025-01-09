@@ -5,14 +5,14 @@ public enum OrderByDirection {
     ascending("ASC"),
     descending("DESC");
 
-    private final String userOrderByDirection;
+    private final String orderByDirection;
 
-    private OrderByDirection(String userOrderByDirection){
-        this.userOrderByDirection = userOrderByDirection; 
+    private OrderByDirection(String orderByDirection){
+        this.orderByDirection = orderByDirection; 
     }
 
     @Override
     public String toString(){
-        return this.userOrderByDirection;
+        return this.orderByDirection;
     }
 }
