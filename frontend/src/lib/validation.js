@@ -33,7 +33,7 @@ export const LoginFormValidation = z.object({
 });
 
 
-// Define the schema for validating the form data
+
 export const bookFormValidation = z.object({
   title: z.string().nonempty("Book title is required"),
   author: z.string().nonempty("Author is required"),
@@ -47,7 +47,6 @@ export const bookFormValidation = z.object({
 });
 
 
-// Movie form validation schema
 export const movieFormValidation = z.object({
   title: z.string().nonempty("Movie title is required"),
   director: z.string().nonempty("Director is required"),
@@ -55,7 +54,7 @@ export const movieFormValidation = z.object({
   releaseyear: z
     .string()
     .nonempty("Release year is required")
-    .regex(/^\d{4}$/, "Year must be a 4-digit number"), // Validate that it's a 4-digit number
+    .regex(/^\d{4}$/, "Year must be a 4-digit number"), 
   description: z.string().nonempty("Description is required"),
   imgUrl: z.string().url("Provide a valid image URL"),
 });
@@ -68,14 +67,13 @@ export const adminFormValidation = z.object({
 
 
 
-// Define validation schema for admin login
 export const adminFormValidationLogin = z.object({
   email: z
     .string()
-    .email("Invalid email address") // Ensure the email is in a valid format
-    .min(1, "Email is required"), // Ensure email is not empty
+    .email("Invalid email address") 
+    .min(1, "Email is required"), 
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters long") // Minimum password length
-    .min(1, "Password is required"), // Ensure password is not empty
+    .min(6, "Password must be at least 6 characters long") 
+    .min(1, "Password is required"), 
 });
